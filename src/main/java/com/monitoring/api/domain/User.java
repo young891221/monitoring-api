@@ -4,6 +4,11 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+/**
+ * Created by young891221@gmail.com on 2018-03-25
+ * Blog : http://haviyj.tistory.com
+ * Github : http://github.com/young891221
+ */
 @Entity
 public class User {
 
