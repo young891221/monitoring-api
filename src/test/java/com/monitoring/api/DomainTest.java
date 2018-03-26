@@ -2,6 +2,7 @@ package com.monitoring.api;
 
 import com.monitoring.api.domain.KaMoney;
 import com.monitoring.api.domain.User;
+import com.monitoring.api.repository.KaMoneyRepository;
 import com.monitoring.api.repository.UserRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by young891221@gmail.com on 2018-03-25
@@ -26,6 +28,9 @@ public class DomainTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private KaMoneyRepository kaMoneyRepository;
+
     @Test
     public void Commone_User_생성_테스트() {
         User saveUser = userRepository.save(User.generate(ID, NAME));
@@ -37,10 +42,11 @@ public class DomainTest {
 
     @Test
     public void KaAccount_User_생성_테스트() {
-        User user = User.generateWithKaAccount(ID, NAME, new KaMoney());
-        User saveUser = userRepository.save(user);
+        User user = userRepository.save(User.generate(ID, NAME));
+        KaMoney kaMoney = kaMoneyRepository.save(KaMoney.generate(user));
 
-        assertNotNull(saveUser.getIdx());
-        assertNotNull(saveUser.getKaMoney());
+        assertNotNull(user.getIdx());
+        assertNotNull(user.getKaMoney());
+        assertTrue(kaMoney.getAccountNumber() >= 1000000000);
     }
 }

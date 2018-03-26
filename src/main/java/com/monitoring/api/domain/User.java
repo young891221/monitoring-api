@@ -1,6 +1,8 @@
 package com.monitoring.api.domain;
 
 import javax.persistence.*;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -10,7 +12,7 @@ import java.util.Objects;
  * Github : http://github.com/young891221
  */
 @Entity
-public class User {
+public class User implements Serializable {
 
     @Id
     @GeneratedValue
@@ -69,6 +71,10 @@ public class User {
 
     public KaMoney getKaMoney() {
         return kaMoney;
+    }
+
+    public void setKaMoney(KaMoney kaMoney) {
+        this.kaMoney = kaMoney;
     }
 
     @Override

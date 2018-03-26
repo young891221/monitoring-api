@@ -1,6 +1,8 @@
 package com.monitoring.api.domain;
 
 import javax.persistence.*;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -9,29 +11,37 @@ import java.time.LocalDateTime;
  * Github : http://github.com/young891221
  */
 @Entity
-public class KaMoney {
+public class KaMoney implements Serializable {
 
     @Id
-    @GeneratedValue
-    private Long idx;
-
-    @Column
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
+    @SequenceGenerator(name = "seq", sequenceName = "SEQUENCE_KAMONEY", initialValue = 1000000000)
     private Long accountNumber;
 
     @Column
-    private Long money;
+    private Long money = 0L;
 
     @Column
     private LocalDateTime createdDate;
 
+    @OneToOne
+    private User user;
+
     //@OneToMany
     //private Account account;
 
-    public KaMoney() {
+
+    private KaMoney() {
     }
 
-    public Long getIdx() {
-        return idx;
+    private KaMoney(User user) {
+        this.createdDate = LocalDateTime.now();
+        this.user = user;
+        user.setKaMoney(this);
+    }
+
+    public static KaMoney generate(User user) {
+        return new KaMoney(user);
     }
 
     public Long getAccountNumber() {
@@ -44,6 +54,10 @@ public class KaMoney {
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
+    }
+
+    public User getUser() {
+        return user;
     }
 
     /*public Account getAccount() {
