@@ -1,13 +1,13 @@
-package com.monitoring.api;
+package com.monitoring.api.domain;
 
-import com.monitoring.api.domain.KaMoney;
-import com.monitoring.api.domain.User;
 import com.monitoring.api.domain.log.KaMoneyEventLog;
 import com.monitoring.api.domain.log.enums.KaMoneyEventType;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.monitoring.api.AcceptanceTest.TEST_ID;
+import static com.monitoring.api.AcceptanceTest.TEST_NAME;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -16,18 +16,17 @@ import static org.junit.Assert.assertEquals;
  * Github : http://github.com/young891221
  */
 public class KaMoneyLogTest {
-    private static final String ID = "young891221";
-    private static final String NAME = "김영재";
-    private static User user;
-    private static KaMoney kaMoney;
+
+    private User user;
+    private KaMoney kaMoney;
 
     @Before
     public void init() {
-        user = User.generate(ID, NAME);
+        user = User.generate(TEST_ID, TEST_NAME);
     }
 
     @Test
-    public void 서비스_계좌_개설이_완료되었는가() {
+    public void 서비스_계좌_개설_타입이_올바른가() {
         kaMoney = KaMoney.generateRandomNumber(user);
         KaMoneyEventLog kaMoneyEventLog = KaMoneyEventLog.openKaMoney(kaMoney);
 

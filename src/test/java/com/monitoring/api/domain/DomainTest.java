@@ -1,15 +1,16 @@
-package com.monitoring.api;
+package com.monitoring.api.domain;
 
-import com.monitoring.api.domain.KaMoney;
-import com.monitoring.api.domain.User;
 import com.monitoring.api.repository.KaMoneyRepository;
 import com.monitoring.api.repository.UserRepository;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static com.monitoring.api.AcceptanceTest.TEST_ID;
+import static com.monitoring.api.AcceptanceTest.TEST_NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -22,8 +23,6 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringRunner.class)
 @DataJpaTest
 public class DomainTest {
-    private static final String ID = "young891221";
-    private static final String NAME = "김영재";
 
     @Autowired
     private UserRepository userRepository;
@@ -33,16 +32,16 @@ public class DomainTest {
 
     @Test
     public void Commone_User_생성_테스트() {
-        User saveUser = userRepository.save(User.generate(ID, NAME));
+        User saveUser = userRepository.save(User.generate(TEST_ID, TEST_NAME));
 
         assertNotNull(saveUser.getIdx());
         assertNotNull(saveUser.getCreatedDate());
-        assertEquals(ID, saveUser.getId());
+        assertEquals(TEST_ID, saveUser.getId());
     }
 
     @Test
     public void KaAccount_User_생성_테스트() {
-        User user = userRepository.save(User.generate(ID, NAME));
+        User user = userRepository.save(User.generate(TEST_ID, TEST_NAME));
         KaMoney kaMoney = kaMoneyRepository.save(KaMoney.generate(user));
 
         assertNotNull(user.getIdx());

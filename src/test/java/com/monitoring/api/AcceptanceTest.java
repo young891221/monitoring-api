@@ -1,6 +1,5 @@
 package com.monitoring.api;
 
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -11,11 +10,10 @@ import org.springframework.test.context.junit4.SpringRunner;
  * Github : http://github.com/young891221
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
-public class ApiApplicationTests {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public abstract class AcceptanceTest {
 
-	@Test
-	public void contextLoads() {
-	}
+	public static final String TEST_ID = "young891221";
+	public static final String TEST_NAME = "김영재";
 
 }
