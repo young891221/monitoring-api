@@ -44,9 +44,10 @@ public class Account implements Serializable {
     private Account() {
     }
 
-    public Account(BankType bankType, Long accountNumber) {
+    public Account(BankType bankType, Long accountNumber, Long money) {
         this.bankType = bankType;
         this.accountNumber = accountNumber;
+        this.money = money;
         this.createdDate = LocalDateTime.now();
     }
 

@@ -28,15 +28,13 @@ public class KaMoneyFacade {
         this.accountService = accountService;
     }
 
-    public void openKaMoney(User user) {
-        KaMoney kaMoney = kaMoneyService.openKaMoney(user);
-        Account account = accountService.createAccount();
-        kaMoney = kaMoney.linkAccount(account);
+    public void openKaMoney(User user, Account account) {
+        KaMoney kaMoney = kaMoneyService.openKaMoney(user, account);
         kaMoneyEventLogService.saveLog(KaMoneyEventLog.openKaMoney(kaMoney));
     }
 
     public void chargeKaMoney(User user, long money) {
-        KaMoney kaMoney = kaMoneyService.findByUser(user);
-        kaMoney.chargeMoney(money);
+        KaMoney kaMoney = kaMoneyService.chargeMoney(user, money);
+
     }
 }

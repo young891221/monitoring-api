@@ -28,7 +28,7 @@ public class KaMoney implements Serializable {
     @OneToOne
     private User user;
 
-    @OneToMany
+    @OneToOne
     private Account account;
 
 
