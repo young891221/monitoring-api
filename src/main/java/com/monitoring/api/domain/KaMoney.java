@@ -4,6 +4,7 @@ import javax.persistence.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by young891221@gmail.com on 2018-03-25
@@ -42,6 +43,16 @@ public class KaMoney implements Serializable {
 
     public static KaMoney generate(User user) {
         return new KaMoney(user);
+    }
+
+    public static KaMoney generateRandomNumber(User user) {
+        KaMoney kaMoney = new KaMoney(user);
+        return kaMoney.randomNumber();
+    }
+
+    private KaMoney randomNumber() {
+        this.accountNumber = ThreadLocalRandom.current().nextLong(1000000000, 9999999999L);
+        return this;
     }
 
     public Long getAccountNumber() {
