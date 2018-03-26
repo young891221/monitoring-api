@@ -13,4 +13,9 @@ package com.monitoring.api.rule;
  * 로직 : KaMoneyEventLog의 status가 출금이던 송금이던 20만원 충전 후 1000원이 되었을 경우를 검색
  */
 public class RuleA implements Rule {
+
+    @Override
+    public boolean valid() {
+        return false;
+    }
 }

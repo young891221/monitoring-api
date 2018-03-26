@@ -6,4 +6,5 @@ package com.monitoring.api.rule;
  * Github : http://github.com/young891221
  */
 public interface Rule {
+    boolean valid();
 }
