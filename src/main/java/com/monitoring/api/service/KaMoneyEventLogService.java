@@ -23,4 +23,8 @@ public class KaMoneyEventLogService {
     public KaMoneyEventLog findByUser(User user) {
         return kaMoneyEventLogRepository.findByUser(user);
     }
+
+    public void saveLog(KaMoneyEventLog kaMoneyEventLog) {
+        kaMoneyEventLogRepository.save(kaMoneyEventLog);
+    }
 }

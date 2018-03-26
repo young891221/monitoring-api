@@ -1,7 +1,6 @@
 package com.monitoring.api.repository;
 
-import com.monitoring.api.domain.KaMoney;
-import com.monitoring.api.domain.User;
+import com.monitoring.api.domain.Account;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -10,6 +9,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Blog : http://haviyj.tistory.com
  * Github : http://github.com/young891221
  */
-public interface KaMoneyRepository extends JpaRepository<KaMoney, Long> {
-    KaMoney findByUser(User user);
+public interface AccountRepository extends JpaRepository<Account, Long> {
 }

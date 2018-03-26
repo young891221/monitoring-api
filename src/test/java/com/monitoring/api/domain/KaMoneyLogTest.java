@@ -23,13 +23,19 @@ public class KaMoneyLogTest {
     @Before
     public void init() {
         user = User.generate(TEST_ID, TEST_NAME);
+        kaMoney = KaMoney.generateRandomNumber(user);
     }
 
     @Test
     public void 서비스_계좌_개설_타입이_올바른가() {
-        kaMoney = KaMoney.generateRandomNumber(user);
         KaMoneyEventLog kaMoneyEventLog = KaMoneyEventLog.openKaMoney(kaMoney);
 
         assertEquals(KaMoneyEventType.OPEN, kaMoneyEventLog.getKaMoneyEventType());
+    }
+
+    @Test
+    public void 계좌_충전이_올바른가() {
+        long money = 200000;
+        kaMoney = kaMoney.chargeMoney(money);
     }
 }

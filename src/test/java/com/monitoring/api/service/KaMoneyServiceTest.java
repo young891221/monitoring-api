@@ -2,6 +2,7 @@ package com.monitoring.api.service;
 
 import com.monitoring.api.AcceptanceTest;
 import com.monitoring.api.domain.User;
+import com.monitoring.api.facade.KaMoneyFacade;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +23,7 @@ public class KaMoneyServiceTest extends AcceptanceTest {
     private UserService userService;
 
     @Autowired
-    private KaMoneyService kaMoneyService;
+    private KaMoneyFacade kaMoneyFacade;
 
     @Autowired
     private KaMoneyEventLogService kaMoneyEventLogService;
@@ -34,7 +35,12 @@ public class KaMoneyServiceTest extends AcceptanceTest {
 
     @Test
     public void 계좌_개설이_정상적으로_동작하는가() {
-        kaMoneyService.openKaMoney(user);
+        kaMoneyFacade.openKaMoney(user);
         assertNotNull(kaMoneyEventLogService.findByUser(user));
+    }
+
+    @Test
+    public void 충전이_정상적으로_이루어지는가() {
+
     }
 }

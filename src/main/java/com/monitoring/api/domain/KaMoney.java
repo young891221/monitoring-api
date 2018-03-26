@@ -28,8 +28,8 @@ public class KaMoney implements Serializable {
     @OneToOne
     private User user;
 
-    //@OneToMany
-    //private Account account;
+    @OneToMany
+    private Account account;
 
 
     private KaMoney() {
@@ -55,6 +55,24 @@ public class KaMoney implements Serializable {
         return this;
     }
 
+    public KaMoney linkAccount(Account account) {
+        this.account = account;
+        account.setUser(getUser());
+        return this;
+    }
+
+    public KaMoney chargeMoney(long chargeMoney) {
+        long accountMoney = this.account.getMoney();
+
+        if(chargeMoney == 0) throw new IllegalArgumentException("충전 금액을 올바르게 입력해 주세요.");
+        if(accountMoney < chargeMoney) throw new IllegalArgumentException("금액이 충분하지 않습니다.");
+
+        this.money += chargeMoney;
+        this.account.minusMoney(chargeMoney);
+
+        return this;
+    }
+
     public Long getAccountNumber() {
         return accountNumber;
     }
@@ -71,7 +89,7 @@ public class KaMoney implements Serializable {
         return user;
     }
 
-    /*public Account getAccount() {
+    public Account getAccount() {
         return account;
-    }*/
+    }
 }

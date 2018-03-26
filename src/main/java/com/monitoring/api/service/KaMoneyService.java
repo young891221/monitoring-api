@@ -2,8 +2,6 @@ package com.monitoring.api.service;
 
 import com.monitoring.api.domain.KaMoney;
 import com.monitoring.api.domain.User;
-import com.monitoring.api.domain.log.KaMoneyEventLog;
-import com.monitoring.api.repository.KaMoneyEventLogRepository;
 import com.monitoring.api.repository.KaMoneyRepository;
 
 import org.springframework.stereotype.Service;
@@ -17,15 +15,16 @@ import org.springframework.stereotype.Service;
 public class KaMoneyService {
 
     private KaMoneyRepository kaMoneyRepository;
-    private KaMoneyEventLogRepository kaMoneyEventLogRepository;
 
-    public KaMoneyService(KaMoneyRepository kaMoneyRepository, KaMoneyEventLogRepository kaMoneyEventLogRepository) {
+    public KaMoneyService(KaMoneyRepository kaMoneyRepository) {
         this.kaMoneyRepository = kaMoneyRepository;
-        this.kaMoneyEventLogRepository = kaMoneyEventLogRepository;
     }
 
-    public void openKaMoney(User user) {
-        KaMoney kaMoney = kaMoneyRepository.save(KaMoney.generate(user));
-        kaMoneyEventLogRepository.save(KaMoneyEventLog.openKaMoney(kaMoney)); //TODO:파사드 레이어 두면 좋을 듯(스파게티 소스 방지)
+    public KaMoney openKaMoney(User user) {
+        return kaMoneyRepository.save(KaMoney.generate(user));
+    }
+
+    public KaMoney findByUser(User user) {
+        return kaMoneyRepository.findByUser(user);
     }
 }
