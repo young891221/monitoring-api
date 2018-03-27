@@ -9,10 +9,11 @@ package com.monitoring.api.rule;
 import com.monitoring.api.domain.User;
 import com.monitoring.api.domain.log.KaMoneyEventLog;
 import com.monitoring.api.domain.log.enums.KaMoneyEventType;
-import com.monitoring.api.service.KaMoneyEventLogService;
 
+import java.time.LocalDateTime;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.monitoring.api.domain.log.enums.KaMoneyEventType.OPEN;
 import static com.monitoring.api.domain.log.enums.KaMoneyEventType.REMITTANCE;
@@ -27,29 +28,37 @@ public class RuleA implements Rule {
 
     private EnumMap<KaMoneyEventType, List<KaMoneyEventLog>> typeListEnumMap;
 
-    private RuleA(KaMoneyEventLogService kaMoneyEventLogService, User user) {
-        this.typeListEnumMap = mapping(kaMoneyEventLogService, user);
+    private RuleA(List<KaMoneyEventLog> kaMoneyEventLogs, User user) {
+        this.typeListEnumMap = mapping(kaMoneyEventLogs, user);
     }
 
-    public static RuleA create(KaMoneyEventLogService kaMoneyEventLogService, User user) {
-        return new RuleA(kaMoneyEventLogService, user);
+    public static RuleA create(List<KaMoneyEventLog> kaMoneyEventLogs, User user) {
+        return new RuleA(kaMoneyEventLogs, user);
     }
 
     @Override
-    public EnumMap<KaMoneyEventType, List<KaMoneyEventLog>> mapping(KaMoneyEventLogService kaMoneyEventLogService, User user) {
-        List<KaMoneyEventLog> opneKaMoneyLogs = kaMoneyEventLogService.findByKaMoneyEventTypeAndUser(OPEN, user);
-        List<KaMoneyEventLog> chargeKaMoneyLogs = kaMoneyEventLogService.findByKaMoneyEventTypeAndUser(REMITTANCE, user);
-
-        EnumMap<KaMoneyEventType, List<KaMoneyEventLog>> typeListEnumMap = new EnumMap<>(KaMoneyEventType.class);
-        typeListEnumMap.put(OPEN, opneKaMoneyLogs);
-        typeListEnumMap.put(REMITTANCE, chargeKaMoneyLogs);
-
-        return typeListEnumMap;
+    public EnumMap<KaMoneyEventType, List<KaMoneyEventLog>> mapping(List<KaMoneyEventLog> kaMoneyEventLogs, User user) {
+        return kaMoneyEventLogs.stream()
+                .collect(Collectors.groupingBy(
+                        KaMoneyEventLog::getKaMoneyEventType,
+                        () -> new EnumMap<>(KaMoneyEventType.class),
+                        Collectors.toList()
+                ));
     }
 
     @Override
     public boolean valid() {
+        if(!isWithinOneHour()) return true;
+
+        typeListEnumMap.get(REMITTANCE).stream()
+                .anyMatch(log -> log.getAfterMoney() >= 200000L);
+
         return false;
+    }
+
+    private boolean isWithinOneHour() {
+        return typeListEnumMap.get(OPEN).stream()
+                    .anyMatch(log -> LocalDateTime.now().minusHours(1).isAfter(log.getCreatedDate()));
     }
 
     public EnumMap<KaMoneyEventType, List<KaMoneyEventLog>> getTypeListEnumMap() {

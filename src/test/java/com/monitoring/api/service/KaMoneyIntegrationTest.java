@@ -20,7 +20,7 @@ import static org.junit.Assert.assertThat;
  * Blog : http://haviyj.tistory.com
  * Github : http://github.com/young891221
  */
-public class KaMoneyServiceTest extends AcceptanceTest {
+public class KaMoneyIntegrationTest extends AcceptanceTest {
 
     private User user;
 

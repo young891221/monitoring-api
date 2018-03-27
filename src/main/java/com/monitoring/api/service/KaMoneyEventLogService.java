@@ -7,6 +7,9 @@ import com.monitoring.api.repository.KaMoneyEventLogRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 /**
  * Created by young891221@gmail.com on 2018-03-26
  * Blog : http://haviyj.tistory.com
@@ -28,5 +31,9 @@ public class KaMoneyEventLogService {
 
     public void saveLog(KaMoneyEventLog kaMoneyEventLog) {
         kaMoneyEventLogRepository.save(kaMoneyEventLog);
+    }
+
+    public List<KaMoneyEventLog> findByCreatedDateAfterAndUser(LocalDateTime createdDate, User user) {
+        return kaMoneyEventLogRepository.findByCreatedDateAfterAndUser(createdDate, user);
     }
 }

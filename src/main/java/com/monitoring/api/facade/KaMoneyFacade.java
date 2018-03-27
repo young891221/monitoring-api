@@ -7,12 +7,13 @@ import com.monitoring.api.domain.log.KaMoneyEventLog;
 import com.monitoring.api.rule.RuleA;
 import com.monitoring.api.rule.RuleEngine;
 import com.monitoring.api.rule.RuleList;
-import com.monitoring.api.service.AccountService;
 import com.monitoring.api.service.KaMoneyEventLogService;
 import com.monitoring.api.service.KaMoneyService;
+import com.monitoring.api.service.RuleLogService;
 
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -25,12 +26,12 @@ public class KaMoneyFacade {
 
     private KaMoneyService kaMoneyService;
     private KaMoneyEventLogService kaMoneyEventLogService;
-    private AccountService accountService;
+    private RuleLogService ruleLogService;
 
-    public KaMoneyFacade(KaMoneyService kaMoneyService, KaMoneyEventLogService kaMoneyEventLogService, AccountService accountService) {
+    public KaMoneyFacade(KaMoneyService kaMoneyService, KaMoneyEventLogService kaMoneyEventLogService, RuleLogService ruleLogService) {
         this.kaMoneyService = kaMoneyService;
         this.kaMoneyEventLogService = kaMoneyEventLogService;
-        this.accountService = accountService;
+        this.ruleLogService = ruleLogService;
     }
 
     public void openKaMoney(final User user, final Account account) {
@@ -56,8 +57,9 @@ public class KaMoneyFacade {
         receiveKaMoney(toUser, money);
         kaMoneyEventLogService.saveLog(KaMoneyEventLog.remittanceKaMoney(beforeKaMoney, afterKaMoney));
 
-        RuleList ruleList = RuleList.generateByArray(RuleA.create(kaMoneyEventLogService));
+        List<KaMoneyEventLog> kaMoneyEventLogs = kaMoneyEventLogService.findByCreatedDateAfterAndUser(LocalDateTime.now().minusHours(1), afterKaMoney.getUser());
+        RuleList ruleList = RuleList.generateByArray(RuleA.create(kaMoneyEventLogs, afterKaMoney.getUser()));
         RuleEngine ruleEngine = new RuleEngine(ruleList);
-        List<String> notValidRules = ruleEngine.run(); //TODO: RuleService 작성하여 RuleLog에 저장
+        ruleLogService.saveRules(ruleEngine.run(), afterKaMoney.getUser());
     }
 }

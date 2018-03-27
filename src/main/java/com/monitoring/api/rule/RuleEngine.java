@@ -1,6 +1,5 @@
 package com.monitoring.api.rule;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -10,16 +9,16 @@ import java.util.stream.Collectors;
  */
 public class RuleEngine {
 
-    private List<Rule> rules;
+    private RuleList ruleList;
 
-    public RuleEngine(List<Rule> rules) {
-        this.rules = rules;
+    public RuleEngine(RuleList ruleList) {
+        this.ruleList = ruleList;
     }
 
-    public List<String> run() {
-        return rules.stream()
+    public String run() {
+        return ruleList.get().stream()
                 .filter(rule -> !rule.valid())
-                .map(Object::toString)
-                .collect(Collectors.toList());
+                .map(rule -> rule.getClass().getSimpleName())
+                .collect(Collectors.joining(", "));
     }
 }

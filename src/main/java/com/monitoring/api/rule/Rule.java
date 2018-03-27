@@ -3,7 +3,6 @@ package com.monitoring.api.rule;
 import com.monitoring.api.domain.User;
 import com.monitoring.api.domain.log.KaMoneyEventLog;
 import com.monitoring.api.domain.log.enums.KaMoneyEventType;
-import com.monitoring.api.service.KaMoneyEventLogService;
 
 import java.util.EnumMap;
 import java.util.List;
@@ -14,6 +13,6 @@ import java.util.List;
  * Github : http://github.com/young891221
  */
 public interface Rule {
-    EnumMap<KaMoneyEventType, List<KaMoneyEventLog>> mapping(KaMoneyEventLogService kaMoneyEventLogService, User user);
+    EnumMap<KaMoneyEventType, List<KaMoneyEventLog>> mapping(List<KaMoneyEventLog> kaMoneyEventLogs, User user);
     boolean valid();
 }
