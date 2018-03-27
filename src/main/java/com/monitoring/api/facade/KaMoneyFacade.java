@@ -6,13 +6,13 @@ import com.monitoring.api.domain.User;
 import com.monitoring.api.domain.log.KaMoneyEventLog;
 import com.monitoring.api.rule.RuleA;
 import com.monitoring.api.rule.RuleEngine;
+import com.monitoring.api.rule.RuleList;
 import com.monitoring.api.service.AccountService;
 import com.monitoring.api.service.KaMoneyEventLogService;
 import com.monitoring.api.service.KaMoneyService;
 
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -33,14 +33,31 @@ public class KaMoneyFacade {
         this.accountService = accountService;
     }
 
-    public void openKaMoney(User user, Account account) {
+    public void openKaMoney(final User user, final Account account) {
         KaMoney kaMoney = kaMoneyService.openKaMoney(user, account);
         kaMoneyEventLogService.saveLog(KaMoneyEventLog.openKaMoney(kaMoney));
     }
 
-    public void chargeKaMoney(User user, long money) {
-        KaMoney kaMoney = kaMoneyService.chargeMoney(user, money);
-        RuleEngine ruleEngine = new RuleEngine(Collections.singletonList(new RuleA())); //TODO: RuleService 작성
-        List<String> notValidRules = ruleEngine.run();
+    public void chargeKaMoney(final User user, final long money) {
+        KaMoney beforeKaMoney = kaMoneyService.findByUser(user);
+        KaMoney afterKaMoney = kaMoneyService.chargeMoney(user, money);
+        kaMoneyEventLogService.saveLog(KaMoneyEventLog.cargeKaMoney(beforeKaMoney, afterKaMoney));
+    }
+
+    public void receiveKaMoney(final User toUser, final long money) {
+        KaMoney beforeKaMoney = kaMoneyService.findByUser(toUser);
+        KaMoney afterKaMoney = kaMoneyService.receiveKaMoney(beforeKaMoney, money);
+        kaMoneyEventLogService.saveLog(KaMoneyEventLog.receiveKaMoney(beforeKaMoney, afterKaMoney));
+    }
+
+    public void remittanceKaMoney(final User fromUser, final User toUser, final long money) {
+        KaMoney beforeKaMoney = kaMoneyService.findByUser(fromUser);
+        KaMoney afterKaMoney = kaMoneyService.remittanceMoney(beforeKaMoney, money);
+        receiveKaMoney(toUser, money);
+        kaMoneyEventLogService.saveLog(KaMoneyEventLog.remittanceKaMoney(beforeKaMoney, afterKaMoney));
+
+        RuleList ruleList = RuleList.generateByArray(RuleA.create(kaMoneyEventLogService));
+        RuleEngine ruleEngine = new RuleEngine(ruleList);
+        List<String> notValidRules = ruleEngine.run(); //TODO: RuleService 작성하여 RuleLog에 저장
     }
 }

@@ -55,20 +55,37 @@ public class KaMoney implements Serializable {
         return this;
     }
 
-    public KaMoney linkAccount(Account account) {
+    public KaMoney linkAccount(final Account account) {
         this.account = account;
         account.setUser(getUser());
         return this;
     }
 
-    public KaMoney chargeMoney(long chargeMoney) {
+    public KaMoney chargeMoney(final long chargeMoney) {
         long accountMoney = this.account.getMoney();
 
-        if(chargeMoney == 0) throw new IllegalArgumentException("충전 금액을 올바르게 입력해 주세요.");
+        if(chargeMoney <= 0) throw new IllegalArgumentException("충전 금액을 올바르게 입력해 주세요.");
         if(accountMoney < chargeMoney) throw new IllegalArgumentException("금액이 충분하지 않습니다.");
 
         this.money += chargeMoney;
         this.account.minusMoney(chargeMoney);
+
+        return this;
+    }
+
+    public KaMoney remittanceMoney(final long money) {
+        if(money <= 0) throw new IllegalArgumentException("송금 금액을 올바르게 입력해 주세요.");
+        if(this.money < money) throw new IllegalArgumentException("금액이 충분하지 않습니다.");
+
+        this.money -= money;
+
+        return this;
+    }
+
+    public KaMoney receiveMoney(final long money) {
+        if(money <= 0) throw new IllegalArgumentException("금액을 올바르게 입력해 주세요.");
+
+        this.money += money;
 
         return this;
     }

@@ -61,4 +61,22 @@ public class KaMoneyServiceTest extends AcceptanceTest {
 
         assertThat(kaMoney.getMoney(), is(200000L));
     }
+
+    @Test
+    public void 송금이_정상적으로_이루어지는가() {
+        long targetMoney = 10000L;
+
+        Account fromAccount = accountService.createAccount(new Account(BankType.KB, 1234L, targetMoney));
+        kaMoneyFacade.openKaMoney(user, fromAccount);
+        kaMoneyFacade.chargeKaMoney(user, targetMoney);
+
+        User toUser = userService.createUser(User.generate("toUser", "test"));
+        Account toAccount = accountService.createAccount(new Account(BankType.KB, 1235L, 0L));
+        kaMoneyFacade.openKaMoney(toUser, toAccount);
+
+        kaMoneyFacade.remittanceKaMoney(user, toUser, targetMoney);
+
+        assertThat(kaMoneyService.findByUser(user).getMoney(), is(0L));
+        assertThat(kaMoneyService.findByUser(toUser).getMoney(), is(targetMoney));
+    }
 }

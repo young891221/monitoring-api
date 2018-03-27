@@ -58,6 +58,18 @@ public class KaMoneyEventLog implements Serializable {
         return new KaMoneyEventLog(KaMoneyEventType.OPEN, null, kaMoney.getMoney(), kaMoney.getUser());
     }
 
+    public static KaMoneyEventLog cargeKaMoney(KaMoney beforeKaMoney, KaMoney afterKaMoney) {
+        return new KaMoneyEventLog(KaMoneyEventType.CHARGE, beforeKaMoney.getMoney(), afterKaMoney.getMoney(), afterKaMoney.getUser());
+    }
+
+    public static KaMoneyEventLog remittanceKaMoney(KaMoney beforeKaMoney, KaMoney afterKaMoney) {
+        return new KaMoneyEventLog(KaMoneyEventType.REMITTANCE, beforeKaMoney.getMoney(), afterKaMoney.getMoney(), afterKaMoney.getUser());
+    }
+
+    public static KaMoneyEventLog receiveKaMoney(KaMoney beforeKaMoney, KaMoney afterKaMoney) {
+        return new KaMoneyEventLog(KaMoneyEventType.RECEIVE, beforeKaMoney.getMoney(), afterKaMoney.getMoney(), afterKaMoney.getUser());
+    }
+
     public Long getIdx() {
         return idx;
     }

@@ -36,4 +36,12 @@ public class KaMoneyService {
         KaMoney kaMoney = findByUser(user);
         return kaMoney.chargeMoney(money);
     }
+
+    public KaMoney remittanceMoney(KaMoney kaMoney, long money) {
+        return kaMoneyRepository.save(kaMoney.remittanceMoney(money));
+    }
+
+    public KaMoney receiveKaMoney(KaMoney kaMoney, long money) {
+        return kaMoneyRepository.save(kaMoney.receiveMoney(money));
+    }
 }
