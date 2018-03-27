@@ -12,17 +12,11 @@ import com.monitoring.api.domain.log.enums.KaMoneyEventType;
 import java.time.LocalDateTime;
 import java.util.EnumMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import static com.monitoring.api.domain.log.enums.KaMoneyEventType.CHARGE;
 import static com.monitoring.api.domain.log.enums.KaMoneyEventType.OPEN;
 import static com.monitoring.api.domain.log.enums.KaMoneyEventType.REMITTANCE;
 
-/**
- * 서비스 계좌 개설 이후 1시간 이내, 20만원 충전 후 잔액이 1000원 이하가 되는 경우
- * 상황: 송금할때
- * 매개변수 : KaMoneyEventLogService(주입)
- * 로직 : KaMoneyEventLog의 status가 출금이던 송금이던 20만원 충전 후 1000원이 되었을 경우를 검색
- */
 public class RuleA implements Rule {
 
     private EnumMap<KaMoneyEventType, List<KaMoneyEventLog>> typeListEnumMap;
@@ -35,42 +29,46 @@ public class RuleA implements Rule {
         return new RuleA(kaMoneyEventLogs);
     }
 
-    @Override
-    public EnumMap<KaMoneyEventType, List<KaMoneyEventLog>> mapping(List<KaMoneyEventLog> kaMoneyEventLogs) {
-        return kaMoneyEventLogs.stream()
-                .collect(Collectors.groupingBy(
-                        KaMoneyEventLog::getKaMoneyEventType,
-                        () -> new EnumMap<>(KaMoneyEventType.class),
-                        Collectors.toList()
-                ));
-    }
-
+    /**
+     * RuleA 검증로직
+     * 서비스 계좌 개설 이후 1시간 이내, 20만원 충전 후 잔액이 1000원 이하가 되는 경우
+     * @return RuleA에 해당하면 true, 아니면 false
+     */
     @Override
     public boolean valid() {
         return isWithinOneHour() && isTwentyChargeAndLeftThousand();
     }
 
+    /**
+     * 서비스 계좌 개설 이후 1시간 이내
+     * @return
+     */
     private boolean isWithinOneHour() {
         return typeListEnumMap.get(OPEN).stream()
                     .anyMatch(log -> LocalDateTime.now().minusHours(1).isBefore(log.getCreatedDate()));
     }
 
+    /**
+     * 20만원 충전 후 잔액이 1000원 이하가 되는 경우
+     * @return
+     */
     private boolean isTwentyChargeAndLeftThousand() {
+        List<KaMoneyEventLog> chargeLogs = typeListEnumMap.get(CHARGE);
         List<KaMoneyEventLog> remittanceLogs = typeListEnumMap.get(REMITTANCE);
-        int length = remittanceLogs.size();
-        int twentyIndex = -1;
+        LocalDateTime twentyChargeTime = null;
 
-        for (int i = 0; i < length; i++) {
-            if(remittanceLogs.get(i).getAfterMoney() >= 200000L) {
-                twentyIndex = i;
+        for (KaMoneyEventLog chargeLog : chargeLogs) {
+            if(chargeLog.getAfterMoney() >= 200000L) {
+                twentyChargeTime = chargeLog.getCreatedDate();
                 break;
             }
         }
 
-        if(twentyIndex > -1) {
-            for (int j = twentyIndex + 1; j < length; j++) {
-                if (remittanceLogs.get(j).getAfterMoney() <= 1000L) return true;
-            }
+        if(twentyChargeTime != null) {
+            final LocalDateTime finalTwentyChargeTime = twentyChargeTime;
+            final boolean isThousandTarget = remittanceLogs.stream()
+                    .anyMatch(log -> finalTwentyChargeTime.isBefore(log.getCreatedDate()) && log.getAfterMoney() <= 1000L);
+            return isThousandTarget;
         }
 
         return false;

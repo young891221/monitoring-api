@@ -11,6 +11,7 @@ import java.util.List;
 
 import static com.monitoring.api.AcceptanceTest.TEST_ID;
 import static com.monitoring.api.AcceptanceTest.TEST_NAME;
+import static com.monitoring.api.domain.log.enums.KaMoneyEventType.CHARGE;
 import static com.monitoring.api.domain.log.enums.KaMoneyEventType.OPEN;
 import static com.monitoring.api.domain.log.enums.KaMoneyEventType.REMITTANCE;
 import static org.junit.Assert.assertEquals;
@@ -61,7 +62,7 @@ public class RuleATest {
     private List<KaMoneyEventLog> rightMockRoleALogs() {
         List<KaMoneyEventLog> kaMoneyEventLogs = new ArrayList<>();
         kaMoneyEventLogs.add(KaMoneyEventLog.generateAtDate(OPEN, null, 100000L, LocalDateTime.now().minusMinutes(30), user));
-        kaMoneyEventLogs.add(KaMoneyEventLog.generateAtDate(REMITTANCE, 100000L, 200000L, LocalDateTime.now().minusMinutes(20), user));
+        kaMoneyEventLogs.add(KaMoneyEventLog.generateAtDate(CHARGE, 100000L, 200000L, LocalDateTime.now().minusMinutes(20), user));
         kaMoneyEventLogs.add(KaMoneyEventLog.generateAtDate(REMITTANCE, 200000L, 1000L, LocalDateTime.now().minusMinutes(10), user));
         return kaMoneyEventLogs;
     }
@@ -69,7 +70,7 @@ public class RuleATest {
     private List<KaMoneyEventLog> incorrectChargeOrder() {
         List<KaMoneyEventLog> kaMoneyEventLogs = new ArrayList<>();
         kaMoneyEventLogs.add(KaMoneyEventLog.generateAtDate(OPEN, null, 100000L, LocalDateTime.now().minusMinutes(30), user));
-        kaMoneyEventLogs.add(KaMoneyEventLog.generateAtDate(REMITTANCE, 100000L, 1000L, LocalDateTime.now().minusMinutes(20), user));
+        kaMoneyEventLogs.add(KaMoneyEventLog.generateAtDate(CHARGE, 100000L, 1000L, LocalDateTime.now().minusMinutes(20), user));
         kaMoneyEventLogs.add(KaMoneyEventLog.generateAtDate(REMITTANCE, 1000L, 200000L, LocalDateTime.now().minusMinutes(10), user));
         return kaMoneyEventLogs;
     }
