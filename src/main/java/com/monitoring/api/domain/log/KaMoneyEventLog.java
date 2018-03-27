@@ -87,6 +87,10 @@ public class KaMoneyEventLog implements Serializable {
         return KaMoneyEventLog.generate(KaMoneyEventType.RECEIVE, beforeKaMoney.getMoney(), afterKaMoney.getMoney(), afterKaMoney.getUser());
     }
 
+    public Long subMoney() {
+        return this.afterMoney - this.beforeMoney;
+    }
+
     public Long getIdx() {
         return idx;
     }

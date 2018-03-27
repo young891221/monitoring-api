@@ -54,7 +54,7 @@ public class RuleB implements Rule {
     private boolean isReceiveTenThousandAtFiveTime() {
         List<KaMoneyEventLog> receiveLogs = typeListEnumMap.get(RECEIVE);
         return receiveLogs.stream()
-                .filter(log -> log.getAfterMoney() - log.getBeforeMoney() >= 100000L)
+                .filter(log -> log.subMoney() >= 100000L)
                 .count() >= 5;
     }
 

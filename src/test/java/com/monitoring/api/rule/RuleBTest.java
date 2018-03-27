@@ -43,23 +43,23 @@ public class RuleBTest {
     @Test
     public void RuleB_검증에서_7일이내_개설이_아닐때_반환이_올바른가() {
         RuleList ruleList = RuleList.generateByArray(
-                RuleA.create(Collections.singletonList(KaMoneyEventLog.generateAtDate(OPEN, null, 100000L, LocalDateTime.now().minusDays(8), user))));
+                RuleB.create(Collections.singletonList(KaMoneyEventLog.generateAtDate(OPEN, null, 100000L, LocalDateTime.now().minusDays(8), user))));
         RuleEngine ruleEngine = new RuleEngine(ruleList);
 
         assertEquals("", ruleEngine.run());
     }
 
     @Test
-    public void RuleB_검증에서_받기가_10만원_이상이_아닐떄_체크() {
-        RuleList ruleList = RuleList.generateByArray(RuleA.create(incorrectTenThousand()));
+    public void RuleB_검증에서_받기가_10만원_이상이_아닐때() {
+        RuleList ruleList = RuleList.generateByArray(RuleB.create(incorrectTenThousand()));
         RuleEngine ruleEngine = new RuleEngine(ruleList);
 
         assertEquals("", ruleEngine.run());
     }
 
     @Test
-    public void RuleB_검증에서_받기가_10만원_이상이_5회가_아닐때_체크() {
-        RuleList ruleList = RuleList.generateByArray(RuleA.create(incorrectCount()));
+    public void RuleB_검증에서_받기가_10만원_이상이_5회가_아닐때() {
+        RuleList ruleList = RuleList.generateByArray(RuleB.create(incorrectCount()));
         RuleEngine ruleEngine = new RuleEngine(ruleList);
 
         assertEquals("", ruleEngine.run());
