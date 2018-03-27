@@ -6,7 +6,6 @@ package com.monitoring.api.rule;
  * Github : http://github.com/young891221
  */
 
-import com.monitoring.api.domain.User;
 import com.monitoring.api.domain.log.KaMoneyEventLog;
 import com.monitoring.api.domain.log.enums.KaMoneyEventType;
 
@@ -28,16 +27,16 @@ public class RuleA implements Rule {
 
     private EnumMap<KaMoneyEventType, List<KaMoneyEventLog>> typeListEnumMap;
 
-    private RuleA(List<KaMoneyEventLog> kaMoneyEventLogs, User user) {
-        this.typeListEnumMap = mapping(kaMoneyEventLogs, user);
+    private RuleA(List<KaMoneyEventLog> kaMoneyEventLogs) {
+        this.typeListEnumMap = mapping(kaMoneyEventLogs);
     }
 
-    public static RuleA create(List<KaMoneyEventLog> kaMoneyEventLogs, User user) {
-        return new RuleA(kaMoneyEventLogs, user);
+    public static RuleA create(List<KaMoneyEventLog> kaMoneyEventLogs) {
+        return new RuleA(kaMoneyEventLogs);
     }
 
     @Override
-    public EnumMap<KaMoneyEventType, List<KaMoneyEventLog>> mapping(List<KaMoneyEventLog> kaMoneyEventLogs, User user) {
+    public EnumMap<KaMoneyEventType, List<KaMoneyEventLog>> mapping(List<KaMoneyEventLog> kaMoneyEventLogs) {
         return kaMoneyEventLogs.stream()
                 .collect(Collectors.groupingBy(
                         KaMoneyEventLog::getKaMoneyEventType,
@@ -48,17 +47,33 @@ public class RuleA implements Rule {
 
     @Override
     public boolean valid() {
-        if(!isWithinOneHour()) return true;
-
-        typeListEnumMap.get(REMITTANCE).stream()
-                .anyMatch(log -> log.getAfterMoney() >= 200000L);
-
-        return false;
+        return isWithinOneHour() && isTwentyChargeAndLeftThousand();
     }
 
     private boolean isWithinOneHour() {
         return typeListEnumMap.get(OPEN).stream()
-                    .anyMatch(log -> LocalDateTime.now().minusHours(1).isAfter(log.getCreatedDate()));
+                    .anyMatch(log -> LocalDateTime.now().minusHours(1).isBefore(log.getCreatedDate()));
+    }
+
+    private boolean isTwentyChargeAndLeftThousand() {
+        List<KaMoneyEventLog> remittanceLogs = typeListEnumMap.get(REMITTANCE);
+        int length = remittanceLogs.size();
+        int twentyIndex = -1;
+
+        for (int i = 0; i < length; i++) {
+            if(remittanceLogs.get(i).getAfterMoney() >= 200000L) {
+                twentyIndex = i;
+                break;
+            }
+        }
+
+        if(twentyIndex > -1) {
+            for (int j = twentyIndex + 1; j < length; j++) {
+                if (remittanceLogs.get(j).getAfterMoney() <= 1000L) return true;
+            }
+        }
+
+        return false;
     }
 
     public EnumMap<KaMoneyEventType, List<KaMoneyEventLog>> getTypeListEnumMap() {

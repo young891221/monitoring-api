@@ -17,7 +17,7 @@ public class RuleEngine {
 
     public String run() {
         return ruleList.get().stream()
-                .filter(rule -> !rule.valid())
+                .filter(Rule::valid)
                 .map(rule -> rule.getClass().getSimpleName())
                 .collect(Collectors.joining(", "));
     }

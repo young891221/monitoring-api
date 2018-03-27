@@ -58,7 +58,7 @@ public class KaMoneyFacade {
         kaMoneyEventLogService.saveLog(KaMoneyEventLog.remittanceKaMoney(beforeKaMoney, afterKaMoney));
 
         List<KaMoneyEventLog> kaMoneyEventLogs = kaMoneyEventLogService.findByCreatedDateAfterAndUser(LocalDateTime.now().minusHours(1), afterKaMoney.getUser());
-        RuleList ruleList = RuleList.generateByArray(RuleA.create(kaMoneyEventLogs, afterKaMoney.getUser()));
+        RuleList ruleList = RuleList.generateByArray(RuleA.create(kaMoneyEventLogs));
         RuleEngine ruleEngine = new RuleEngine(ruleList);
         ruleLogService.saveRules(ruleEngine.run(), afterKaMoney.getUser());
     }

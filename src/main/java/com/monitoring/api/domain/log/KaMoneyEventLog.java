@@ -6,6 +6,7 @@ import com.monitoring.api.domain.log.enums.KaMoneyEventType;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -54,20 +55,36 @@ public class KaMoneyEventLog implements Serializable {
         this.user = user;
     }
 
+    public KaMoneyEventLog(KaMoneyEventType kaMoneyEventType, Long beforeMoney, Long afterMoney, LocalDateTime createdDate, User user) {
+        this.kaMoneyEventType = kaMoneyEventType;
+        this.beforeMoney = beforeMoney;
+        this.afterMoney = afterMoney;
+        this.createdDate = createdDate;
+        this.user = user;
+    }
+
+    public static KaMoneyEventLog generate(KaMoneyEventType kaMoneyEventType, Long beforeMoney, Long afterMoney, User user) {
+        return new KaMoneyEventLog(kaMoneyEventType, beforeMoney, afterMoney, user);
+    }
+
+    public static KaMoneyEventLog generateAtDate(KaMoneyEventType kaMoneyEventType, Long beforeMoney, Long afterMoney, LocalDateTime createdDate, User user) {
+        return new KaMoneyEventLog(kaMoneyEventType, beforeMoney, afterMoney, createdDate, user);
+    }
+
     public static KaMoneyEventLog openKaMoney(KaMoney kaMoney) {
-        return new KaMoneyEventLog(KaMoneyEventType.OPEN, null, kaMoney.getMoney(), kaMoney.getUser());
+        return KaMoneyEventLog.generate(KaMoneyEventType.OPEN, null, kaMoney.getMoney(), kaMoney.getUser());
     }
 
     public static KaMoneyEventLog cargeKaMoney(KaMoney beforeKaMoney, KaMoney afterKaMoney) {
-        return new KaMoneyEventLog(KaMoneyEventType.CHARGE, beforeKaMoney.getMoney(), afterKaMoney.getMoney(), afterKaMoney.getUser());
+        return KaMoneyEventLog.generate(KaMoneyEventType.CHARGE, beforeKaMoney.getMoney(), afterKaMoney.getMoney(), afterKaMoney.getUser());
     }
 
     public static KaMoneyEventLog remittanceKaMoney(KaMoney beforeKaMoney, KaMoney afterKaMoney) {
-        return new KaMoneyEventLog(KaMoneyEventType.REMITTANCE, beforeKaMoney.getMoney(), afterKaMoney.getMoney(), afterKaMoney.getUser());
+        return KaMoneyEventLog.generate(KaMoneyEventType.REMITTANCE, beforeKaMoney.getMoney(), afterKaMoney.getMoney(), afterKaMoney.getUser());
     }
 
     public static KaMoneyEventLog receiveKaMoney(KaMoney beforeKaMoney, KaMoney afterKaMoney) {
-        return new KaMoneyEventLog(KaMoneyEventType.RECEIVE, beforeKaMoney.getMoney(), afterKaMoney.getMoney(), afterKaMoney.getUser());
+        return KaMoneyEventLog.generate(KaMoneyEventType.RECEIVE, beforeKaMoney.getMoney(), afterKaMoney.getMoney(), afterKaMoney.getUser());
     }
 
     public Long getIdx() {
@@ -92,5 +109,20 @@ public class KaMoneyEventLog implements Serializable {
 
     public User getUser() {
         return user;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        KaMoneyEventLog that = (KaMoneyEventLog) o;
+        return Objects.equals(idx, that.idx) &&
+                kaMoneyEventType == that.kaMoneyEventType;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(idx, kaMoneyEventType);
     }
 }
