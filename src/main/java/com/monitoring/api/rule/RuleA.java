@@ -31,19 +31,19 @@ public class RuleA implements Rule {
 
     /**
      * RuleA 검증로직
-     * 서비스 계좌 개설 이후 1시간 이내, 20만원 충전 후 잔액이 1000원 이하가 되는 경우
+     * 서비스 계좌 개설 1시간 이내, 20만원 충전 후 잔액이 1000원 이하가 되는 경우
      * @return RuleA에 해당하면 true, 아니면 false
      */
     @Override
     public boolean valid() {
-        return isWithinOneHour() && isTwentyChargeAndLeftThousand();
+        return isWithinOneHourOpen() && isTwentyChargeAndLeftThousand();
     }
 
     /**
-     * 서비스 계좌 개설 이후 1시간 이내
+     * 서비스 계좌 개설 1시간 이내
      * @return
      */
-    private boolean isWithinOneHour() {
+    private boolean isWithinOneHourOpen() {
         return typeListEnumMap.get(OPEN).stream()
                     .anyMatch(log -> LocalDateTime.now().minusHours(1).isBefore(log.getCreatedDate()));
     }

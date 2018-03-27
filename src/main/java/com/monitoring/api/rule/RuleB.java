@@ -6,11 +6,59 @@ package com.monitoring.api.rule;
  * Github : http://github.com/young891221
  */
 
-/**
- * 서비스 계좌 개설 이후 7일 이내, 받기 기능으로 10만원 이상 금액을 5회 이상 하는 경우
- * 상황 : 받기 기능 실행시
- * 매개변수 : KaMoneyEventLogRepository(주입)
- * 로직 : KaMoneyEventLog에서 먼저 계좌 개설이 7일 이내인지 검색, 앞의 조건이 맞으면 10만원 이상으로 5회이상 했는지 체크
- */
-public class RuleB {
+import com.monitoring.api.domain.log.KaMoneyEventLog;
+import com.monitoring.api.domain.log.enums.KaMoneyEventType;
+
+import java.time.LocalDateTime;
+import java.util.EnumMap;
+import java.util.List;
+
+import static com.monitoring.api.domain.log.enums.KaMoneyEventType.OPEN;
+import static com.monitoring.api.domain.log.enums.KaMoneyEventType.RECEIVE;
+
+public class RuleB implements Rule {
+
+    private EnumMap<KaMoneyEventType, List<KaMoneyEventLog>> typeListEnumMap;
+
+    private RuleB(List<KaMoneyEventLog> kaMoneyEventLogs) {
+        this.typeListEnumMap = mapping(kaMoneyEventLogs);
+    }
+
+    public static RuleB create(List<KaMoneyEventLog> kaMoneyEventLogs) {
+        return new RuleB(kaMoneyEventLogs);
+    }
+
+    /**
+     * RuleB 검증로직
+     * 서비스 계좌 개설 7일 이내, 받기 기능으로 10만원 이상 금액을 5회 이상 하는 경우
+     * @return RuleB에 해당하면 true, 아니면 false
+     */
+    @Override
+    public boolean valid() {
+        return isWithinSevenDayOpen() && isReceiveTenThousandAtFiveTime();
+    }
+
+    /**
+     * 서비스 계좌 개설 7일 이내
+     * @return
+     */
+    private boolean isWithinSevenDayOpen() {
+        return typeListEnumMap.get(OPEN).stream()
+                .anyMatch(log -> LocalDateTime.now().minusDays(7).isBefore(log.getCreatedDate()));
+    }
+
+    /**
+     * 받기 기능으로 10만원 이상 금액을 5회 이상 하는 경우
+     * @return
+     */
+    private boolean isReceiveTenThousandAtFiveTime() {
+        List<KaMoneyEventLog> receiveLogs = typeListEnumMap.get(RECEIVE);
+        return receiveLogs.stream()
+                .filter(log -> log.getAfterMoney() - log.getBeforeMoney() >= 100000L)
+                .count() >= 5;
+    }
+
+    public EnumMap<KaMoneyEventType, List<KaMoneyEventLog>> getTypeListEnumMap() {
+        return typeListEnumMap;
+    }
 }
