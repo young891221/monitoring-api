@@ -25,4 +25,8 @@ public class RuleLogService {
     public void saveRules(String rules, User user) {
         ruleLogRepository.save(new RuleLog(rules, user));
     }
+
+    public RuleLog findByUser(User user) {
+        return ruleLogRepository.findByUser(user);
+    }
 }

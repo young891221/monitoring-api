@@ -10,6 +10,7 @@ import com.monitoring.api.service.KaMoneyService;
 import com.monitoring.api.service.RuleLogService;
 
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,9 +39,10 @@ public class KaMoneyFacade {
      * @param user
      * @param account
      */
-    public void openKaMoney(final User user, final Account account) {
+    public KaMoney openKaMoney(final User user, final Account account) {
         KaMoney kaMoney = kaMoneyService.openKaMoney(user, account);
         kaMoneyEventLogService.saveLog(KaMoneyEventLog.openKaMoney(kaMoney));
+        return kaMoney;
     }
 
     /**
@@ -71,7 +73,10 @@ public class KaMoneyFacade {
                 .collect(Collectors.toList());
         RuleList ruleList = RuleList.generateByArray(RuleB.create(ruleBlogs), RuleC.create(ruleClogs));
         RuleEngine ruleEngine = new RuleEngine(ruleList);
-        ruleLogService.saveRules(ruleEngine.run(), afterKaMoney.getUser());
+        String notValidRules = ruleEngine.run();
+        if(!StringUtils.isEmpty(notValidRules)) {
+            ruleLogService.saveRules(notValidRules, afterKaMoney.getUser());
+        }
     }
 
     /**
@@ -89,6 +94,9 @@ public class KaMoneyFacade {
         List<KaMoneyEventLog> kaMoneyEventLogs = kaMoneyEventLogService.findByCreatedDateAfterAndUser(LocalDateTime.now().minusHours(1), afterKaMoney.getUser());
         RuleList ruleList = RuleList.generateByArray(RuleA.create(kaMoneyEventLogs));
         RuleEngine ruleEngine = new RuleEngine(ruleList);
-        ruleLogService.saveRules(ruleEngine.run(), afterKaMoney.getUser());
+        String notValidRules = ruleEngine.run();
+        if(!StringUtils.isEmpty(notValidRules)) {
+            ruleLogService.saveRules(notValidRules, afterKaMoney.getUser());
+        }
     }
 }

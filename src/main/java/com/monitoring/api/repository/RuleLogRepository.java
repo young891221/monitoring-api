@@ -1,5 +1,6 @@
 package com.monitoring.api.repository;
 
+import com.monitoring.api.domain.User;
 import com.monitoring.api.domain.log.RuleLog;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,4 +11,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Github : http://github.com/young891221
  */
 public interface RuleLogRepository extends JpaRepository<RuleLog, Long> {
+    RuleLog findByUser(User user);
 }

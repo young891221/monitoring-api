@@ -19,7 +19,7 @@ public class User implements Serializable {
     private Long idx;
 
     @Column
-    private String id;
+    private String userId;
 
     @Column
     private String name;
@@ -33,18 +33,18 @@ public class User implements Serializable {
     private User() {
     }
 
-    private User(String id, String name) {
-        this.id = id;
+    private User(String userId, String name) {
+        this.userId = userId;
         this.name = name;
         this.createdDate = LocalDateTime.now();
     }
 
-    public static User generate(String id, String name) {
-        return new User(id, name);
+    public static User generate(String userId, String name) {
+        return new User(userId, name);
     }
 
-    public static User generateWithKaAccount(String id, String name, KaMoney kaMoney) {
-        User user = new User(id, name);
+    public static User generateWithKaAccount(String userId, String name, KaMoney kaMoney) {
+        User user = new User(userId, name);
         user.addKaMoney(kaMoney);
         return user;
     }
@@ -57,8 +57,8 @@ public class User implements Serializable {
         return idx;
     }
 
-    public String getId() {
-        return id;
+    public String getUserId() {
+        return userId;
     }
 
     public String getName() {
@@ -83,11 +83,11 @@ public class User implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
         return Objects.equals(idx, user.idx) &&
-                Objects.equals(id, user.id);
+                Objects.equals(userId, user.userId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idx, id);
+        return Objects.hash(idx, userId);
     }
 }

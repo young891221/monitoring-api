@@ -6,7 +6,9 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Created by KimYJ on 2018-03-27.
+ * Created by young891221@gmail.com on 2018-03-27
+ * Blog : http://haviyj.tistory.com
+ * Github : http://github.com/young891221
  */
 public class RuleIntegrationTest extends AcceptanceTest {
 
