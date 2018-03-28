@@ -1,9 +1,15 @@
 package com.monitoring.api.rule;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.monitoring.api.domain.User;
 import com.monitoring.api.domain.log.KaMoneyEventLog;
 import org.junit.Test;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,6 +30,8 @@ import static org.junit.Assert.assertNotNull;
  */
 public class RuleATest {
 
+    private static PathMatchingResourcePatternResolver patternResolver = new PathMatchingResourcePatternResolver();
+    private static ObjectMapper objectMapper = new ObjectMapper();
     private User user = User.generate(TEST_ID, TEST_NAME);
 
     @Test
@@ -76,4 +84,10 @@ public class RuleATest {
     }
 
 
+    private List<KaMoneyEventLog> jsonMockData() throws IOException {
+        Resource[] resources = patternResolver.getResources("classpath:/mock/roleA/rule_a.json");
+        objectMapper.registerModule(new JavaTimeModule());
+        List<KaMoneyEventLog> roleALogs = objectMapper.readValue(resources[0].getInputStream(), new TypeReference<List<KaMoneyEventLog>>(){});
+        return roleALogs;
+    }
 }
