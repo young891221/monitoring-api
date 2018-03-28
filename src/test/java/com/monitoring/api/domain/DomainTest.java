@@ -36,7 +36,7 @@ public class DomainTest {
 
         assertNotNull(saveUser.getIdx());
         assertNotNull(saveUser.getCreatedDate());
-        assertEquals(TEST_ID, saveUser.getId());
+        assertEquals(TEST_ID, saveUser.getUserId());
     }
 
     @Test
