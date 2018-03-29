@@ -2,7 +2,6 @@ package com.monitoring.api.rule;
 
 import com.monitoring.api.AcceptanceTest;
 import com.monitoring.api.dto.RuleLogDto;
-import com.monitoring.api.service.RuleLogService;
 import com.monitoring.api.test.TestIntegrationModule;
 import com.monitoring.api.test.TestMockModule;
 
@@ -31,7 +30,7 @@ public class RuleIntegrationTest extends AcceptanceTest {
     @Test
     public void RuleA_통합_테스트() {
         testMockModule.testRoleAProcess();
-        RuleLogDto ruleLogDto = ruleLogFacade.findRuleLogByUserId(1);
+        RuleLogDto ruleLogDto = ruleLogFacade.findRuleLogByUserId(userService.findLastCreatedUser().getIdx());
 
         assertTrue(ruleLogDto.isFraud());
         assertEquals("RuleA", ruleLogDto.getRule());
