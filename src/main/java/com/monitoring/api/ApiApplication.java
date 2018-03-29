@@ -37,7 +37,7 @@ public class ApiApplication {
 
 			TestMockModule testMockModule = new TestMockModule(userService, ruleLogService);
 			//testMockModule.testRoleAProcess();
-			//testMockModule.testRoleBProcess();
+			testMockModule.testRoleBProcess();
 			//testMockModule.testRoleCProcess();
 		};
 	}
