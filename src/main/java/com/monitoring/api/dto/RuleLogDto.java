@@ -5,24 +5,29 @@ import com.monitoring.api.domain.log.RuleLog;
 import org.springframework.util.StringUtils;
 
 /**
- * Created by KimYJ on 2018-03-28.
+ * Created by young891221@gmail.com on 2018-03-28
+ * Blog : http://haviyj.tistory.com
+ * Github : http://github.com/young891221
  */
 public class RuleLogDto {
-    private long userId;
+    private Long userId;
     private boolean isFraud;
     private String rule;
 
-    public RuleLogDto(long userId, boolean isFraud, String rule) {
+    public RuleLogDto(Long userId, boolean isFraud, String rule) {
         this.userId = userId;
         this.isFraud = isFraud;
         this.rule = rule;
     }
 
     public static RuleLogDto convert(RuleLog ruleLog) {
+        if(ruleLog == null) {
+            return new RuleLogDto(null, false, "");
+        }
         return new RuleLogDto(ruleLog.getIdx(), !StringUtils.isEmpty(ruleLog.getNotValidRuls()), ruleLog.getNotValidRuls());
     }
 
-    public long getUserId() {
+    public Long getUserId() {
         return userId;
     }
 

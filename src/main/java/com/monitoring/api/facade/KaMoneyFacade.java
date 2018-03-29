@@ -4,17 +4,15 @@ import com.monitoring.api.domain.Account;
 import com.monitoring.api.domain.KaMoney;
 import com.monitoring.api.domain.User;
 import com.monitoring.api.domain.log.KaMoneyEventLog;
-import com.monitoring.api.rule.*;
 import com.monitoring.api.service.KaMoneyEventLogService;
 import com.monitoring.api.service.KaMoneyService;
 import com.monitoring.api.service.RuleLogService;
 
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by young891221@gmail.com on 2018-03-26
@@ -22,6 +20,7 @@ import java.util.stream.Collectors;
  * Github : http://github.com/young891221
  */
 @Component
+@Transactional
 public class KaMoneyFacade {
 
     private KaMoneyService kaMoneyService;
@@ -51,9 +50,9 @@ public class KaMoneyFacade {
      * @param money
      */
     public void chargeKaMoney(final User user, final long money) {
-        KaMoney beforeKaMoney = kaMoneyService.findByUser(user);
-        KaMoney afterKaMoney = kaMoneyService.chargeMoney(user, money);
-        kaMoneyEventLogService.saveLog(KaMoneyEventLog.cargeKaMoney(beforeKaMoney, afterKaMoney));
+        KaMoney kaMoney = kaMoneyService.findByUser(user);
+        kaMoney = kaMoney.chargeMoney(money);
+        kaMoneyEventLogService.saveLog(KaMoneyEventLog.cargeKaMoney(kaMoney));
     }
 
     /**
@@ -62,21 +61,12 @@ public class KaMoneyFacade {
      * @param money
      */
     public void receiveKaMoney(final User toUser, final long money) {
-        KaMoney beforeKaMoney = kaMoneyService.findByUser(toUser);
-        KaMoney afterKaMoney = kaMoneyService.receiveKaMoney(beforeKaMoney, money);
-        kaMoneyEventLogService.saveLog(KaMoneyEventLog.receiveKaMoney(beforeKaMoney, afterKaMoney));
+        KaMoney kaMoney = kaMoneyService.findByUser(toUser);
+        kaMoney = kaMoney.receiveMoney(money);
+        kaMoneyEventLogService.saveLog(KaMoneyEventLog.receiveKaMoney(kaMoney));
 
-        List<KaMoneyEventLog> ruleBlogs = kaMoneyEventLogService.findByCreatedDateAfterAndUser(LocalDateTime.now().minusDays(7), afterKaMoney.getUser());
-        final LocalDateTime ruleCTime = LocalDateTime.now().minusHours(2);
-        List<KaMoneyEventLog> ruleClogs = ruleBlogs.stream()
-                .filter(log -> ruleCTime.isBefore(log.getCreatedDate()))
-                .collect(Collectors.toList());
-        RuleList ruleList = RuleList.generateByArray(RuleB.create(ruleBlogs), RuleC.create(ruleClogs));
-        RuleEngine ruleEngine = new RuleEngine(ruleList);
-        String notValidRules = ruleEngine.run();
-        if(!StringUtils.isEmpty(notValidRules)) {
-            ruleLogService.saveRules(notValidRules, afterKaMoney.getUser());
-        }
+        List<KaMoneyEventLog> ruleBLogs = kaMoneyEventLogService.findByCreatedDateAfterAndUser(LocalDateTime.now().minusDays(7), kaMoney.getUser());
+        ruleLogService.receiveKaMoneyRuleCheck(ruleBLogs, kaMoney);
     }
 
     /**
@@ -86,17 +76,12 @@ public class KaMoneyFacade {
      * @param money
      */
     public void remittanceKaMoney(final User fromUser, final User toUser, final long money) {
-        KaMoney beforeKaMoney = kaMoneyService.findByUser(fromUser);
-        KaMoney afterKaMoney = kaMoneyService.remittanceMoney(beforeKaMoney, money);
+        KaMoney kaMoney = kaMoneyService.findByUser(fromUser);
+        kaMoney = kaMoney.remittanceMoney(money);
         receiveKaMoney(toUser, money);
-        kaMoneyEventLogService.saveLog(KaMoneyEventLog.remittanceKaMoney(beforeKaMoney, afterKaMoney));
+        kaMoneyEventLogService.saveLog(KaMoneyEventLog.remittanceKaMoney(kaMoney));
 
-        List<KaMoneyEventLog> kaMoneyEventLogs = kaMoneyEventLogService.findByCreatedDateAfterAndUser(LocalDateTime.now().minusHours(1), afterKaMoney.getUser());
-        RuleList ruleList = RuleList.generateByArray(RuleA.create(kaMoneyEventLogs));
-        RuleEngine ruleEngine = new RuleEngine(ruleList);
-        String notValidRules = ruleEngine.run();
-        if(!StringUtils.isEmpty(notValidRules)) {
-            ruleLogService.saveRules(notValidRules, afterKaMoney.getUser());
-        }
+        List<KaMoneyEventLog> kaMoneyEventLogs = kaMoneyEventLogService.findByCreatedDateAfterAndUser(LocalDateTime.now().minusHours(1), kaMoney.getUser());
+        ruleLogService.remittanceKaMoneyRuleCheck(kaMoneyEventLogs, kaMoney);
     }
 }

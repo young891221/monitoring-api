@@ -19,6 +19,9 @@ public class KaMoney implements Serializable {
     @SequenceGenerator(name = "seq", sequenceName = "SEQUENCE_KAMONEY", initialValue = 1000000000)
     private Long accountNumber;
 
+    @Transient
+    private Long beforeMoney = 0L;
+
     @Column
     private Long money = 0L;
 
@@ -67,6 +70,7 @@ public class KaMoney implements Serializable {
         if(chargeMoney <= 0) throw new IllegalArgumentException("충전 금액을 올바르게 입력해 주세요.");
         if(accountMoney < chargeMoney) throw new IllegalArgumentException("금액이 충분하지 않습니다.");
 
+        this.beforeMoney = this.money;
         this.money += chargeMoney;
         this.account.minusMoney(chargeMoney);
 
@@ -77,6 +81,7 @@ public class KaMoney implements Serializable {
         if(money <= 0) throw new IllegalArgumentException("송금 금액을 올바르게 입력해 주세요.");
         if(this.money < money) throw new IllegalArgumentException("금액이 충분하지 않습니다.");
 
+        this.beforeMoney = this.money;
         this.money -= money;
 
         return this;
@@ -85,6 +90,7 @@ public class KaMoney implements Serializable {
     public KaMoney receiveMoney(final long money) {
         if(money <= 0) throw new IllegalArgumentException("금액을 올바르게 입력해 주세요.");
 
+        this.beforeMoney = this.money;
         this.money += money;
 
         return this;
@@ -92,6 +98,10 @@ public class KaMoney implements Serializable {
 
     public Long getAccountNumber() {
         return accountNumber;
+    }
+
+    public Long getBeforeMoney() {
+        return beforeMoney;
     }
 
     public Long getMoney() {

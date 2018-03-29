@@ -11,5 +11,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Github : http://github.com/young891221
  */
 public interface RuleLogRepository extends JpaRepository<RuleLog, Long> {
-    RuleLog findByUser(User user);
+    RuleLog findFirstByUserOrderByCreatedDateDesc(User user);
 }

@@ -4,7 +4,6 @@ import com.monitoring.api.domain.User;
 import com.monitoring.api.repository.UserRepository;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -13,7 +12,6 @@ import java.util.Optional;
  * Blog : http://haviyj.tistory.com
  * Github : http://github.com/young891221
  */
-@Transactional
 @Service
 public class UserService {
 

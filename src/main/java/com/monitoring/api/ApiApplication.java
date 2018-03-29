@@ -22,7 +22,7 @@ public class ApiApplication {
 		SpringApplication.run(ApiApplication.class, args);
 	}
 
-	//TODO: 통합 테스트는 별도의 클래스를 만들어서 진행, RoleEngine 저장 영역 간소화 시키기, 주석 및 에러처리 진행
+	//TODO: 주석 및 에러처리 진행
 	@Bean
 	public CommandLineRunner runner(UserService userService, AccountService accountService, KaMoneyFacade kaMoneyFacade) {
 		return (args) -> {
