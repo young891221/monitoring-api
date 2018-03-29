@@ -13,13 +13,13 @@ import com.monitoring.api.service.UserService;
  * Blog : http://haviyj.tistory.com
  * Github : http://github.com/young891221
  */
-public class TestModule {
+public class TestIntegrationModule {
 
     private UserService userService;
     private AccountService accountService;
     private KaMoneyFacade kaMoneyFacade;
 
-    public TestModule(UserService userService, AccountService accountService, KaMoneyFacade kaMoneyFacade) {
+    public TestIntegrationModule(UserService userService, AccountService accountService, KaMoneyFacade kaMoneyFacade) {
         this.userService = userService;
         this.accountService = accountService;
         this.kaMoneyFacade = kaMoneyFacade;

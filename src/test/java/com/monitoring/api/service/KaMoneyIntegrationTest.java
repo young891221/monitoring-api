@@ -25,16 +25,7 @@ public class KaMoneyIntegrationTest extends AcceptanceTest {
     private User user;
 
     @Autowired
-    private KaMoneyFacade kaMoneyFacade;
-
-    @Autowired
     private KaMoneyService kaMoneyService;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private AccountService accountService;
 
     @Autowired
     private KaMoneyEventLogService kaMoneyEventLogService;

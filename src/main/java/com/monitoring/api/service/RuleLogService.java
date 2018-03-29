@@ -40,25 +40,25 @@ public class RuleLogService {
         return ruleLogRepository.findFirstByUserOrderByCreatedDateDesc(user);
     }
 
-    public void remittanceKaMoneyRuleCheck(List<KaMoneyEventLog> kaMoneyEventLogs, KaMoney kaMoney) {
+    public void remittanceKaMoneyRuleCheck(List<KaMoneyEventLog> kaMoneyEventLogs, User user) {
         RuleList ruleList = RuleList.generateByArray(RuleA.create(kaMoneyEventLogs));
-        runRuleEngine(kaMoney, ruleList);
+        runRuleEngine(user, ruleList);
     }
 
-    public void receiveKaMoneyRuleCheck(List<KaMoneyEventLog> kaMoneyEventLogs, KaMoney kaMoney) {
+    public void receiveKaMoneyRuleCheck(List<KaMoneyEventLog> kaMoneyEventLogs, User user) {
         final LocalDateTime ruleCTime = LocalDateTime.now().minusHours(2);
         List<KaMoneyEventLog> ruleCLogs = kaMoneyEventLogs.stream()
                 .filter(log -> ruleCTime.isBefore(log.getCreatedDate()))
                 .collect(Collectors.toList());
         RuleList ruleList = RuleList.generateByArray(RuleB.create(kaMoneyEventLogs), RuleC.create(ruleCLogs));
-        runRuleEngine(kaMoney, ruleList);
+        runRuleEngine(user, ruleList);
     }
 
-    private void runRuleEngine(KaMoney kaMoney, RuleList ruleList) {
+    private void runRuleEngine(User user, RuleList ruleList) {
         RuleEngine ruleEngine = new RuleEngine(ruleList);
         String notValidRules = ruleEngine.run();
         if(!StringUtils.isEmpty(notValidRules)) {
-            saveRules(notValidRules, kaMoney.getUser());
+            saveRules(notValidRules, user);
         }
     }
 }
