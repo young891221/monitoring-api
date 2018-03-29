@@ -1,5 +1,6 @@
 package com.monitoring.api.controller.v1;
 
+import com.monitoring.api.dto.RuleLogDto;
 import com.monitoring.api.facade.RuleLogFacade;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +24,7 @@ public class FraudController {
     }
 
     @GetMapping("/{userId}")
-    public Object fraudUser(@PathVariable long userId) {
+    public RuleLogDto fraudUser(@PathVariable long userId) {
         return ruleLogFacade.findRuleLogByUserId(userId);
     }
 }

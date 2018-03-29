@@ -15,8 +15,8 @@ import java.util.concurrent.ThreadLocalRandom;
 public class KaMoney implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
-    @SequenceGenerator(name = "seq", sequenceName = "SEQUENCE_KAMONEY", initialValue = 1000000000)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_money")
+    @SequenceGenerator(name = "seq_money", sequenceName = "SEQUENCE_KAMONEY", initialValue = 1000000000)
     private Long accountNumber;
 
     @Transient

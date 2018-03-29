@@ -15,7 +15,8 @@ import java.util.Objects;
 public class User implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_user")
+    @SequenceGenerator(name = "seq_user", sequenceName = "SEQUENCE_USER")
     private Long idx;
 
     @Column

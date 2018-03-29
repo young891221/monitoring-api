@@ -9,7 +9,9 @@ import com.monitoring.api.service.UserService;
 import org.springframework.stereotype.Component;
 
 /**
- * Created by KimYJ on 2018-03-28.
+ * Created by young891221@gmail.com on 2018-03-28
+ * Blog : http://haviyj.tistory.com
+ * Github : http://github.com/young891221
  */
 @Component
 public class RuleLogFacade {

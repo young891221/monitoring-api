@@ -15,6 +15,16 @@ import com.monitoring.api.service.UserService;
  */
 public class TestModule {
 
+    private UserService userService;
+    private AccountService accountService;
+    private KaMoneyFacade kaMoneyFacade;
+
+    public TestModule(UserService userService, AccountService accountService, KaMoneyFacade kaMoneyFacade) {
+        this.userService = userService;
+        this.accountService = accountService;
+        this.kaMoneyFacade = kaMoneyFacade;
+    }
+
     /**
      * RoleA 테스트 순서
      * 1)User 생성
@@ -22,7 +32,7 @@ public class TestModule {
      * 3)1시간 이내 20만원 충전 후
      * 4)잔액이 1000원 이하가 되는 경우
      */
-    public void testRoleAProcess(UserService userService, AccountService accountService, KaMoneyFacade kaMoneyFacade) {
+    public void testRoleAProcess() {
         User user = userService.createUser(User.generate("TestA", "TestA"));
         Account account = accountService.createAccount(new Account(BankType.KB, 1234L, 1000000L));
         KaMoney kaMoney = kaMoneyFacade.openKaMoney(user, account);
@@ -41,7 +51,7 @@ public class TestModule {
      * 2)KaMoney 현재시간 기준 7일 이내 계좌 생성
      * 3)받기 기능으로 10만원 이상 금액 5회 이상
      */
-    public void testRoleBProcess(UserService userService, AccountService accountService, KaMoneyFacade kaMoneyFacade) {
+    public void testRoleBProcess() {
         //받을 User
         User toUser = userService.createUser(User.generate("TestB", "TestB"));
         Account toAccount = accountService.createAccount(new Account(BankType.KB, 1235L, 1000000L));

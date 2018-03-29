@@ -46,14 +46,14 @@ public class RuleIntegrationTest extends AcceptanceTest {
 
     @Before
     public void init() {
-         testModule = new TestModule();
+         testModule = new TestModule(userService, accountService, kaMoneyFacade);
          kaMoneyEventLogRepository.deleteAll();
          ruleLogRepository.deleteAll();
     }
 
     @Test
     public void RuleA_통합_테스트() {
-        testModule.testRoleAProcess(userService, accountService, kaMoneyFacade);
+        testModule.testRoleAProcess();
         RuleLogDto ruleLogDto = ruleLogFacade.findRuleLogByUserId(1);
 
         assertTrue(ruleLogDto.isFraud());
@@ -62,7 +62,7 @@ public class RuleIntegrationTest extends AcceptanceTest {
 
     @Test
     public void RuleB_통합_테스트() {
-        testModule.testRoleBProcess(userService, accountService, kaMoneyFacade);
+        testModule.testRoleBProcess();
         RuleLogDto ruleLogDto = ruleLogFacade.findRuleLogByUserId(1);
 
         assertTrue(ruleLogDto.isFraud());

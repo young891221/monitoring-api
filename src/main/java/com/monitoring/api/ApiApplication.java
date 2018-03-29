@@ -26,8 +26,9 @@ public class ApiApplication {
 	@Bean
 	public CommandLineRunner runner(UserService userService, AccountService accountService, KaMoneyFacade kaMoneyFacade) {
 		return (args) -> {
-			TestModule testModule = new TestModule();
-			testModule.testRoleAProcess(userService, accountService, kaMoneyFacade);
+			TestModule testModule = new TestModule(userService, accountService, kaMoneyFacade);
+			testModule.testRoleAProcess();
+			testModule.testRoleBProcess();
 		};
 	}
 
