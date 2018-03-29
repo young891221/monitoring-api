@@ -65,8 +65,8 @@ public class KaMoneyFacade {
         kaMoney = kaMoney.receiveMoney(money);
         kaMoneyEventLogService.saveLog(KaMoneyEventLog.receiveKaMoney(kaMoney));
 
-        List<KaMoneyEventLog> ruleBLogs = kaMoneyEventLogService.findByCreatedDateAfterAndUser(LocalDateTime.now().minusDays(7), kaMoney.getUser());
-        ruleLogService.receiveKaMoneyRuleCheck(ruleBLogs, toUser);
+        List<KaMoneyEventLog> kaMoneyEventLogs = kaMoneyEventLogService.findByCreatedDateAfterAndUser(LocalDateTime.now().minusDays(7), kaMoney.getUser());
+        ruleLogService.receiveKaMoneyRuleCheck(kaMoneyEventLogs, toUser);
     }
 
     /**

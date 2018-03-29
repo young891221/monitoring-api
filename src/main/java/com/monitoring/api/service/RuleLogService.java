@@ -1,16 +1,10 @@
 package com.monitoring.api.service;
 
-import com.monitoring.api.domain.KaMoney;
 import com.monitoring.api.domain.User;
 import com.monitoring.api.domain.log.KaMoneyEventLog;
 import com.monitoring.api.domain.log.RuleLog;
 import com.monitoring.api.repository.RuleLogRepository;
-import com.monitoring.api.rule.RuleA;
-import com.monitoring.api.rule.RuleB;
-import com.monitoring.api.rule.RuleC;
-import com.monitoring.api.rule.RuleEngine;
-import com.monitoring.api.rule.RuleList;
-
+import com.monitoring.api.rule.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
