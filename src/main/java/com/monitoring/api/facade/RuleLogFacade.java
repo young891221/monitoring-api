@@ -8,6 +8,8 @@ import com.monitoring.api.service.UserService;
 
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityNotFoundException;
+
 /**
  * Created by young891221@gmail.com on 2018-03-28
  * Blog : http://haviyj.tistory.com
@@ -25,7 +27,7 @@ public class RuleLogFacade {
     }
 
     public RuleLogDto findRuleLogByUserId(long userId) {
-        User user = userService.findById(userId).orElseThrow(() -> new RuntimeException("일치하는 User가 없습니다."));
+        User user = userService.findById(userId).orElseThrow(() -> new EntityNotFoundException("일치하는 User가 없습니다."));
         RuleLog ruleLog = ruleLogService.findByUser(user);
         return RuleLogDto.convert(ruleLog);
     }
