@@ -28,8 +28,8 @@ public class RuleBTest {
     public void RuleB의_데이터가_올바르게_생성되는가() {
         RuleB rule = RuleB.create(rightMockRoleBLogs());
 
-        assertNotNull(rule.getTypeListEnumMap().get(OPEN));
-        assertNotNull(rule.getTypeListEnumMap().get(RECEIVE));
+        assertNotNull(rule.getTypeListConcurrentMap().get(OPEN));
+        assertNotNull(rule.getTypeListConcurrentMap().get(RECEIVE));
     }
 
     @Test

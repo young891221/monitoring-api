@@ -10,9 +10,9 @@ import com.monitoring.api.domain.log.KaMoneyEventLog;
 import com.monitoring.api.domain.log.enums.KaMoneyEventType;
 
 import java.time.LocalDateTime;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentMap;
 
 import static com.monitoring.api.domain.log.enums.KaMoneyEventType.CHARGE;
 import static com.monitoring.api.domain.log.enums.KaMoneyEventType.OPEN;
@@ -20,10 +20,10 @@ import static com.monitoring.api.domain.log.enums.KaMoneyEventType.REMITTANCE;
 
 public class RuleA implements Rule {
 
-    private EnumMap<KaMoneyEventType, List<KaMoneyEventLog>> typeListEnumMap;
+    private ConcurrentMap<KaMoneyEventType, List<KaMoneyEventLog>> typeListConcurrentMap;
 
     private RuleA(List<KaMoneyEventLog> kaMoneyEventLogs) {
-        this.typeListEnumMap = mapping(kaMoneyEventLogs);
+        this.typeListConcurrentMap = mapping(kaMoneyEventLogs);
     }
 
     public static RuleA create(List<KaMoneyEventLog> kaMoneyEventLogs) {
@@ -45,7 +45,7 @@ public class RuleA implements Rule {
      * @return boolean
      */
     private boolean isWithinOneHourOpen() {
-        return typeListEnumMap.get(OPEN).stream()
+        return typeListConcurrentMap.get(OPEN).stream()
                     .anyMatch(log -> LocalDateTime.now().minusHours(1).isBefore(log.getCreatedDate()));
     }
 
@@ -54,8 +54,8 @@ public class RuleA implements Rule {
      * @return boolean
      */
     private boolean isTwentyChargeAndLeftThousand() {
-        List<KaMoneyEventLog> chargeLogs = typeListEnumMap.get(CHARGE);
-        List<KaMoneyEventLog> remittanceLogs = typeListEnumMap.get(REMITTANCE);
+        List<KaMoneyEventLog> chargeLogs = typeListConcurrentMap.get(CHARGE);
+        List<KaMoneyEventLog> remittanceLogs = typeListConcurrentMap.get(REMITTANCE);
 
         Optional<KaMoneyEventLog> twentyChargeLog = chargeLogs.stream()
                 .filter(log -> log.getAfterMoney() >= 200000L)
@@ -67,7 +67,7 @@ public class RuleA implements Rule {
         return isThousandTarget.orElse(false);
     }
 
-    public EnumMap<KaMoneyEventType, List<KaMoneyEventLog>> getTypeListEnumMap() {
-        return typeListEnumMap;
+    public ConcurrentMap<KaMoneyEventType, List<KaMoneyEventLog>> getTypeListConcurrentMap() {
+        return typeListConcurrentMap;
     }
 }

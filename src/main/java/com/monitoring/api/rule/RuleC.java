@@ -10,15 +10,15 @@ import com.monitoring.api.domain.log.KaMoneyEventLog;
 import com.monitoring.api.domain.log.enums.KaMoneyEventType;
 
 import java.time.LocalDateTime;
-import java.util.EnumMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentMap;
 
 public class RuleC implements Rule {
 
-    private EnumMap<KaMoneyEventType, List<KaMoneyEventLog>> typeListEnumMap;
+    private ConcurrentMap<KaMoneyEventType, List<KaMoneyEventLog>> typeListConcurrentMap;
 
     private RuleC(List<KaMoneyEventLog> kaMoneyEventLogs) {
-        this.typeListEnumMap = mapping(kaMoneyEventLogs);
+        this.typeListConcurrentMap = mapping(kaMoneyEventLogs);
     }
 
     public static RuleC create(List<KaMoneyEventLog> kaMoneyEventLogs) {
@@ -32,15 +32,15 @@ public class RuleC implements Rule {
      */
     @Override
     public boolean valid() {
-        if(!typeListEnumMap.containsKey(KaMoneyEventType.RECEIVE)) return false;
+        if(!typeListConcurrentMap.containsKey(KaMoneyEventType.RECEIVE)) return false;
 
         final LocalDateTime withinTwoHour = LocalDateTime.now().minusHours(2);
-        return typeListEnumMap.get(KaMoneyEventType.RECEIVE).stream()
+        return typeListConcurrentMap.get(KaMoneyEventType.RECEIVE).stream()
                 .filter(log -> withinTwoHour.isBefore(log.getCreatedDate()) && (log.subMoney() >= 50000L))
                 .count() >= 3;
     }
 
-    public EnumMap<KaMoneyEventType, List<KaMoneyEventLog>> getTypeListEnumMap() {
-        return typeListEnumMap;
+    public ConcurrentMap<KaMoneyEventType, List<KaMoneyEventLog>> getTypeListConcurrentMap() {
+        return typeListConcurrentMap;
     }
 }

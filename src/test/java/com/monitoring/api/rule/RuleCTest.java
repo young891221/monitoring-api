@@ -11,7 +11,6 @@ import java.util.List;
 
 import static com.monitoring.api.AcceptanceTest.TEST_ID;
 import static com.monitoring.api.AcceptanceTest.TEST_NAME;
-import static com.monitoring.api.domain.log.enums.KaMoneyEventType.OPEN;
 import static com.monitoring.api.domain.log.enums.KaMoneyEventType.RECEIVE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -29,7 +28,7 @@ public class RuleCTest {
     public void RuleC의_데이터가_올바르게_생성되는가() {
         RuleC rule = RuleC.create(rightMockRoleCLogs());
 
-        assertNotNull(rule.getTypeListEnumMap().get(RECEIVE));
+        assertNotNull(rule.getTypeListConcurrentMap().get(RECEIVE));
     }
 
     @Test

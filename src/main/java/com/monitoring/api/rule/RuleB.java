@@ -10,18 +10,18 @@ import com.monitoring.api.domain.log.KaMoneyEventLog;
 import com.monitoring.api.domain.log.enums.KaMoneyEventType;
 
 import java.time.LocalDateTime;
-import java.util.EnumMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentMap;
 
 import static com.monitoring.api.domain.log.enums.KaMoneyEventType.OPEN;
 import static com.monitoring.api.domain.log.enums.KaMoneyEventType.RECEIVE;
 
 public class RuleB implements Rule {
 
-    private EnumMap<KaMoneyEventType, List<KaMoneyEventLog>> typeListEnumMap;
+    private ConcurrentMap<KaMoneyEventType, List<KaMoneyEventLog>> typeListConcurrentMap;
 
     private RuleB(List<KaMoneyEventLog> kaMoneyEventLogs) {
-        this.typeListEnumMap = mapping(kaMoneyEventLogs);
+        this.typeListConcurrentMap = mapping(kaMoneyEventLogs);
     }
 
     public static RuleB create(List<KaMoneyEventLog> kaMoneyEventLogs) {
@@ -43,8 +43,8 @@ public class RuleB implements Rule {
      * @return
      */
     private boolean isWithinSevenDayOpen() {
-        if(!typeListEnumMap.containsKey(OPEN)) return false;
-        return typeListEnumMap.get(OPEN).stream()
+        if(!typeListConcurrentMap.containsKey(OPEN)) return false;
+        return typeListConcurrentMap.get(OPEN).stream()
                 .anyMatch(log -> LocalDateTime.now().minusDays(7).isBefore(log.getCreatedDate()));
     }
 
@@ -53,13 +53,13 @@ public class RuleB implements Rule {
      * @return
      */
     private boolean isReceiveTenThousandAtFiveTime() {
-        List<KaMoneyEventLog> receiveLogs = typeListEnumMap.get(RECEIVE);
+        List<KaMoneyEventLog> receiveLogs = typeListConcurrentMap.get(RECEIVE);
         return receiveLogs.stream()
                 .filter(log -> log.subMoney() >= 100000L)
                 .count() >= 5;
     }
 
-    public EnumMap<KaMoneyEventType, List<KaMoneyEventLog>> getTypeListEnumMap() {
-        return typeListEnumMap;
+    public ConcurrentMap<KaMoneyEventType, List<KaMoneyEventLog>> getTypeListConcurrentMap() {
+        return typeListConcurrentMap;
     }
 }
