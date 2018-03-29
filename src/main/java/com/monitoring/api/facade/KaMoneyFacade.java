@@ -35,8 +35,8 @@ public class KaMoneyFacade {
 
     /**
      * 계좌 개설 기능
-     * @param user
-     * @param account
+     * @param user 계좌를 개설할 User
+     * @param account KaMoney에 연결할 계좌
      */
     public KaMoney openKaMoney(final User user, final Account account) {
         KaMoney kaMoney = kaMoneyService.openKaMoney(user, account);
@@ -46,8 +46,8 @@ public class KaMoneyFacade {
 
     /**
      * 충전 기능
-     * @param user
-     * @param money
+     * @param user 충전할 User
+     * @param money 충전 금액
      */
     public void chargeKaMoney(final User user, final long money) {
         KaMoney kaMoney = kaMoneyService.findByUser(user);
@@ -57,8 +57,8 @@ public class KaMoneyFacade {
 
     /**
      * 받기 기능
-     * @param toUser
-     * @param money
+     * @param toUser 받기 기능으로 돈을 받을 User
+     * @param money 받을 금액
      */
     public void receiveKaMoney(final User toUser, final long money) {
         KaMoney kaMoney = kaMoneyService.findByUser(toUser);
@@ -71,9 +71,9 @@ public class KaMoneyFacade {
 
     /**
      * 송금 기능
-     * @param fromUser
-     * @param toUser
-     * @param money
+     * @param fromUser 송금할 User
+     * @param toUser 받을 User
+     * @param money 송금할 금액
      */
     public void remittanceKaMoney(final User fromUser, final User toUser, final long money) {
         KaMoney kaMoney = kaMoneyService.findByUser(fromUser);

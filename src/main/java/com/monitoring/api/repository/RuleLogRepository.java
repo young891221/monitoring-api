@@ -11,5 +11,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Github : http://github.com/young891221
  */
 public interface RuleLogRepository extends JpaRepository<RuleLog, Long> {
+    /**
+     * 날짜를 기준으로 제일 마지막에 저장된 RuleLog를 하나만 반환해 주는 쿼리
+     * @param user RuleLog의 대상 User
+     * @return
+     */
     RuleLog findFirstByUserOrderByCreatedDateDesc(User user);
 }

@@ -44,10 +44,20 @@ public class KaMoney implements Serializable {
         user.setKaMoney(this);
     }
 
+    /**
+     * 일반적으로 KaMoney만 생성하는 템플릿 메서드
+     * @param user
+     * @return
+     */
     public static KaMoney generate(User user) {
         return new KaMoney(user);
     }
 
+    /**
+     * 랜덤으로 KaMoney의 계좌 번호를 생성해 주는 템플릿 메서드
+     * @param user
+     * @return
+     */
     public static KaMoney generateRandomNumber(User user) {
         KaMoney kaMoney = new KaMoney(user);
         return kaMoney.randomNumber();

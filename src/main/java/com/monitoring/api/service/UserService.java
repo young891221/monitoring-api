@@ -32,4 +32,8 @@ public class UserService {
     public Optional<User> findById(long id) {
         return userRepository.findById(id);
     }
+
+    public User findLastCreatedUser() {
+        return userRepository.findFirstByOrderByCreatedDateDesc();
+    }
 }

@@ -11,4 +11,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface UserRepository extends JpaRepository<User, Long> {
     User findByUserId(String userId);
+
+    /**
+     * @return 마지막으로 생성된 User 반환 쿼리
+     */
+    User findFirstByOrderByCreatedDateDesc();
 }

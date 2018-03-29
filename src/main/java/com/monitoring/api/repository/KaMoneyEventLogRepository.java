@@ -14,6 +14,14 @@ import java.util.List;
  * Github : http://github.com/young891221
  */
 public interface KaMoneyEventLogRepository extends JpaRepository<KaMoneyEventLog, Long> {
+
     KaMoneyEventLog findByUser(User user);
+
+    /**
+     * 대상 User에 대해 지정 날짜 이후의 KaMoney Event Log 리스트를 반환해 주는 쿼리
+     * @param createdDate 받고 싶은 로그의 기준이 되는 날짜
+     * @param user 대상 User
+     * @return
+     */
     List<KaMoneyEventLog> findByCreatedDateAfterAndUser(LocalDateTime createdDate, User user);
 }

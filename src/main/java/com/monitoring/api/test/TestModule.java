@@ -35,7 +35,7 @@ public class TestModule {
     public void testRoleAProcess() {
         User user = userService.createUser(User.generate("TestA", "TestA"));
         Account account = accountService.createAccount(new Account(BankType.KB, 1234L, 1000000L));
-        KaMoney kaMoney = kaMoneyFacade.openKaMoney(user, account);
+        kaMoneyFacade.openKaMoney(user, account);
         kaMoneyFacade.chargeKaMoney(user, 210000);
 
         User toUser = userService.createUser(User.generate("toUser", "test"));
@@ -52,7 +52,6 @@ public class TestModule {
      * 3)받기 기능으로 10만원 이상 금액 5회 이상
      */
     public void testRoleBProcess() {
-        //받을 User
         User toUser = userService.createUser(User.generate("TestB", "TestB"));
         Account toAccount = accountService.createAccount(new Account(BankType.KB, 1235L, 1000000L));
         kaMoneyFacade.openKaMoney(toUser, toAccount);
@@ -62,5 +61,23 @@ public class TestModule {
         kaMoneyFacade.receiveKaMoney(toUser, 100000);
         kaMoneyFacade.receiveKaMoney(toUser, 100000);
         kaMoneyFacade.receiveKaMoney(toUser, 100000);
+    }
+
+    /**
+     * RoleC 테스트 순서
+     * 1)User 생성
+     * 2)KaMoney 계좌 생성
+     * 3)2시간 이내 받기 기능으로 5만원 이상 금액 3회 이상
+     */
+    public void testRoleCProcess() {
+        User toUser = userService.createUser(User.generate("TestC", "TestC"));
+        Account toAccount = accountService.createAccount(new Account(BankType.KB, 1237L, 1000000L));
+        kaMoneyFacade.openKaMoney(toUser, toAccount);
+
+        kaMoneyFacade.receiveKaMoney(toUser, 50000);
+        kaMoneyFacade.receiveKaMoney(toUser, 50000);
+        kaMoneyFacade.receiveKaMoney(toUser, 50000);
+        kaMoneyFacade.receiveKaMoney(toUser, 50000);
+        kaMoneyFacade.receiveKaMoney(toUser, 50000);
     }
 }

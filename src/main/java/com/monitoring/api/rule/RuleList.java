@@ -9,6 +9,10 @@ import java.util.List;
  * Blog : http://haviyj.tistory.com
  * Github : http://github.com/young891221
  */
+
+/**
+ * 여러 Rule을 리스트 타입으로 관리하는 일급 객체
+ */
 public class RuleList {
     private List<Rule> rules;
 

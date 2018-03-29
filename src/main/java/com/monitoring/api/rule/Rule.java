@@ -12,6 +12,10 @@ import java.util.stream.Collectors;
  * Blog : http://haviyj.tistory.com
  * Github : http://github.com/young891221
  */
+
+/**
+ * 전략 인터페이스
+ */
 public interface Rule {
 
     boolean valid();

@@ -11,5 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Github : http://github.com/young891221
  */
 public interface KaMoneyRepository extends JpaRepository<KaMoney, Long> {
+
     KaMoney findByUser(User user);
+
 }

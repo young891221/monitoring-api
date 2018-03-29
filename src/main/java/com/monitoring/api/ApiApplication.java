@@ -22,15 +22,17 @@ public class ApiApplication {
 		SpringApplication.run(ApiApplication.class, args);
 	}
 
-	//TODO: 주석 및 에러처리 진행
-	@Bean
+	/**
+	 * 애플리케이션 동작시 테스트 Mock 데이터를 위해 CommandLineRunner 동작하도록 작성
+	 */
+	/*@Bean
 	public CommandLineRunner runner(UserService userService, AccountService accountService, KaMoneyFacade kaMoneyFacade) {
 		return (args) -> {
 			TestModule testModule = new TestModule(userService, accountService, kaMoneyFacade);
 			testModule.testRoleAProcess();
 			testModule.testRoleBProcess();
 		};
-	}
+	}*/
 
 
 }

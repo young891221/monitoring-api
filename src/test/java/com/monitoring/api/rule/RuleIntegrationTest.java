@@ -63,7 +63,7 @@ public class RuleIntegrationTest extends AcceptanceTest {
     @Test
     public void RuleB_통합_테스트() {
         testModule.testRoleBProcess();
-        RuleLogDto ruleLogDto = ruleLogFacade.findRuleLogByUserId(1);
+        RuleLogDto ruleLogDto = ruleLogFacade.findRuleLogByUserId(userService.findLastCreatedUser().getIdx());
 
         assertTrue(ruleLogDto.isFraud());
         assertEquals("RuleB, RuleC", ruleLogDto.getRule());
@@ -71,6 +71,10 @@ public class RuleIntegrationTest extends AcceptanceTest {
 
     @Test
     public void RuleC_통합_테스트() {
+        testModule.testRoleCProcess();
+        RuleLogDto ruleLogDto = ruleLogFacade.findRuleLogByUserId(userService.findLastCreatedUser().getIdx());
 
+        assertTrue(ruleLogDto.isFraud());
+        assertEquals("RuleC", ruleLogDto.getRule());
     }
 }

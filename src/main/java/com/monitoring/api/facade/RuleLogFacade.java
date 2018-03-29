@@ -26,6 +26,11 @@ public class RuleLogFacade {
         this.ruleLogService = ruleLogService;
     }
 
+    /**
+     * userId에 대한 최근 RuleLog를 반환
+     * @param userId User의 idx값
+     * @return REST API로 반환할 RuleLogDto
+     */
     public RuleLogDto findRuleLogByUserId(long userId) {
         User user = userService.findById(userId).orElseThrow(() -> new EntityNotFoundException("일치하는 User가 없습니다."));
         RuleLog ruleLog = ruleLogService.findByUser(user);
