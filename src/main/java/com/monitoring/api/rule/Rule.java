@@ -27,14 +27,14 @@ public interface Rule {
      * @param kaMoneyEventLogs 대상 시간 안에 포함되는 KaMoneyEventLog 리스트
      * @return 키값은 KaMoneyEventType으로 해당 키에 맵핑되는 List<KaMoneyEventLog>를 가진 EnumMap 자료구조 반환
      */
-    default EnumMap<KaMoneyEventType, List<KaMoneyEventLog>> mapping(List<KaMoneyEventLog> kaMoneyEventLogs) {
+    default EnumMap<KaMoneyEventType, List<KaMoneyEventLog>> mapping(final List<KaMoneyEventLog> kaMoneyEventLogs) {
         Map<KaMoneyEventType, List<KaMoneyEventLog>> concurrentHashMap = kaMoneyEventLogs.parallelStream()
                 .collect(Collectors.groupingByConcurrent(
                         KaMoneyEventLog::getKaMoneyEventType,
                         Collectors.toList()
                 ));
 
-        EnumMap<KaMoneyEventType, List<KaMoneyEventLog>> eventTypeListEnumMap = new EnumMap<>(KaMoneyEventType.class);
+        final EnumMap<KaMoneyEventType, List<KaMoneyEventLog>> eventTypeListEnumMap = new EnumMap<>(KaMoneyEventType.class);
         eventTypeListEnumMap.putAll(concurrentHashMap);
 
         return eventTypeListEnumMap;

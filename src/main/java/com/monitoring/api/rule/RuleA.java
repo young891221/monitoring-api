@@ -12,6 +12,7 @@ import com.monitoring.api.domain.log.enums.KaMoneyEventType;
 import java.time.LocalDateTime;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Optional;
 
 import static com.monitoring.api.domain.log.enums.KaMoneyEventType.CHARGE;
 import static com.monitoring.api.domain.log.enums.KaMoneyEventType.OPEN;
@@ -41,7 +42,7 @@ public class RuleA implements Rule {
 
     /**
      * 서비스 계좌 개설 1시간 이내
-     * @return
+     * @return boolean
      */
     private boolean isWithinOneHourOpen() {
         return typeListEnumMap.get(OPEN).stream()
@@ -50,28 +51,20 @@ public class RuleA implements Rule {
 
     /**
      * 20만원 충전 후 잔액이 1000원 이하가 되는 경우
-     * @return
+     * @return boolean
      */
     private boolean isTwentyChargeAndLeftThousand() {
         List<KaMoneyEventLog> chargeLogs = typeListEnumMap.get(CHARGE);
         List<KaMoneyEventLog> remittanceLogs = typeListEnumMap.get(REMITTANCE);
-        LocalDateTime twentyChargeTime = null;
 
-        for (KaMoneyEventLog chargeLog : chargeLogs) {
-            if(chargeLog.getAfterMoney() >= 200000L) {
-                twentyChargeTime = chargeLog.getCreatedDate();
-                break;
-            }
-        }
+        Optional<KaMoneyEventLog> twentyChargeLog = chargeLogs.stream()
+                .filter(log -> log.getAfterMoney() >= 200000L)
+                .findFirst();
 
-        if(twentyChargeTime != null) {
-            final LocalDateTime finalTwentyChargeTime = twentyChargeTime;
-            final boolean isThousandTarget = remittanceLogs.stream()
-                    .anyMatch(log -> finalTwentyChargeTime.isBefore(log.getCreatedDate()) && log.getAfterMoney() <= 1000L);
-            return isThousandTarget;
-        }
+        final Optional<Boolean> isThousandTarget = twentyChargeLog.map((log) -> remittanceLogs.stream()
+                .anyMatch(remittanceLog -> log.getCreatedDate().isBefore(remittanceLog.getCreatedDate()) && remittanceLog.getAfterMoney() <= 1000L));
 
-        return false;
+        return isThousandTarget.orElse(false);
     }
 
     public EnumMap<KaMoneyEventType, List<KaMoneyEventLog>> getTypeListEnumMap() {
