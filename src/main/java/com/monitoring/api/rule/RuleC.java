@@ -32,6 +32,8 @@ public class RuleC implements Rule {
      */
     @Override
     public boolean valid() {
+        if(!typeListEnumMap.containsKey(KaMoneyEventType.RECEIVE)) return false;
+
         final LocalDateTime withinTwoHour = LocalDateTime.now().minusHours(2);
         return typeListEnumMap.get(KaMoneyEventType.RECEIVE).stream()
                 .filter(log -> withinTwoHour.isBefore(log.getCreatedDate()) && (log.subMoney() >= 50000L))

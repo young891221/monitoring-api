@@ -43,6 +43,7 @@ public class RuleB implements Rule {
      * @return
      */
     private boolean isWithinSevenDayOpen() {
+        if(!typeListEnumMap.containsKey(OPEN)) return false;
         return typeListEnumMap.get(OPEN).stream()
                 .anyMatch(log -> LocalDateTime.now().minusDays(7).isBefore(log.getCreatedDate()));
     }

@@ -6,6 +6,7 @@ import com.monitoring.api.repository.KaMoneyEventLogRepository;
 import com.monitoring.api.repository.RuleLogRepository;
 import com.monitoring.api.repository.UserRepository;
 import com.monitoring.api.service.AccountService;
+import com.monitoring.api.service.RuleLogService;
 import com.monitoring.api.service.UserService;
 
 import org.junit.Before;
@@ -31,6 +32,9 @@ public abstract class AcceptanceTest {
 
 	@Autowired
 	public AccountService accountService;
+
+	@Autowired
+	public RuleLogService ruleLogService;
 
 	@Autowired
 	public KaMoneyFacade kaMoneyFacade;
