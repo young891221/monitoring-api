@@ -19,9 +19,9 @@ public interface KaMoneyEventLogRepository extends JpaRepository<KaMoneyEventLog
 
     /**
      * 대상 User에 대해 지정 날짜 이후의 KaMoney Event Log 리스트를 반환해 주는 쿼리
-     * @param createdDate 받고 싶은 로그의 기준이 되는 날짜
      * @param user 대상 User
+     * @param createdDate 받고 싶은 로그의 기준이 되는 날짜
      * @return
      */
-    List<KaMoneyEventLog> findByCreatedDateAfterAndUser(LocalDateTime createdDate, User user);
+    List<KaMoneyEventLog> findByUserAndCreatedDateAfter(User user, LocalDateTime createdDate);
 }

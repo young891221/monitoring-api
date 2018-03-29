@@ -65,7 +65,7 @@ public class KaMoneyFacade {
         kaMoney = kaMoney.receiveMoney(money);
         kaMoneyEventLogService.saveLog(KaMoneyEventLog.receiveKaMoney(kaMoney));
 
-        List<KaMoneyEventLog> kaMoneyEventLogs = kaMoneyEventLogService.findByCreatedDateAfterAndUser(LocalDateTime.now().minusDays(7), kaMoney.getUser());
+        List<KaMoneyEventLog> kaMoneyEventLogs = kaMoneyEventLogService.findByUserAndCreatedDateAfter(kaMoney.getUser(), LocalDateTime.now().minusDays(7));
         ruleLogService.receiveKaMoneyRuleCheck(kaMoneyEventLogs, toUser);
     }
 
@@ -81,7 +81,7 @@ public class KaMoneyFacade {
         receiveKaMoney(toUser, money);
         kaMoneyEventLogService.saveLog(KaMoneyEventLog.remittanceKaMoney(kaMoney));
 
-        List<KaMoneyEventLog> kaMoneyEventLogs = kaMoneyEventLogService.findByCreatedDateAfterAndUser(LocalDateTime.now().minusHours(1), kaMoney.getUser());
+        List<KaMoneyEventLog> kaMoneyEventLogs = kaMoneyEventLogService.findByUserAndCreatedDateAfter(kaMoney.getUser(), LocalDateTime.now().minusHours(1));
         ruleLogService.remittanceKaMoneyRuleCheck(kaMoneyEventLogs, fromUser);
     }
 }

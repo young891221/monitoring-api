@@ -31,7 +31,7 @@ public class KaMoneyEventLogService {
         kaMoneyEventLogRepository.save(kaMoneyEventLog);
     }
 
-    public List<KaMoneyEventLog> findByCreatedDateAfterAndUser(LocalDateTime createdDate, User user) {
-        return kaMoneyEventLogRepository.findByCreatedDateAfterAndUser(createdDate, user);
+    public List<KaMoneyEventLog> findByUserAndCreatedDateAfter(User user, LocalDateTime createdDate) {
+        return kaMoneyEventLogRepository.findByUserAndCreatedDateAfter(user, createdDate);
     }
 }
