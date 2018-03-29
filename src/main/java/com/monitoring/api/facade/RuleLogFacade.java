@@ -7,6 +7,7 @@ import com.monitoring.api.service.RuleLogService;
 import com.monitoring.api.service.UserService;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -16,6 +17,7 @@ import javax.persistence.EntityNotFoundException;
  * Github : http://github.com/young891221
  */
 @Component
+@Transactional
 public class RuleLogFacade {
 
     private UserService userService;
