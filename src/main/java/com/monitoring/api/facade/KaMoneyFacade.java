@@ -7,12 +7,8 @@ import com.monitoring.api.domain.log.KaMoneyEventLog;
 import com.monitoring.api.service.KaMoneyEventLogService;
 import com.monitoring.api.service.KaMoneyService;
 import com.monitoring.api.service.RuleLogService;
-
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * Created by young891221@gmail.com on 2018-03-26
@@ -65,8 +61,7 @@ public class KaMoneyFacade {
         kaMoney = kaMoney.receiveMoney(money);
         kaMoneyEventLogService.saveLog(KaMoneyEventLog.receiveKaMoney(kaMoney));
 
-        List<KaMoneyEventLog> kaMoneyEventLogs = kaMoneyEventLogService.findByUserAndCreatedDateAfter(kaMoney.getUser(), LocalDateTime.now().minusDays(7));
-        ruleLogService.receiveKaMoneyRuleCheck(kaMoneyEventLogs, toUser);
+        ruleLogService.receiveKaMoneyRuleCheck(toUser);
     }
 
     /**
@@ -81,7 +76,6 @@ public class KaMoneyFacade {
         receiveKaMoney(toUser, money);
         kaMoneyEventLogService.saveLog(KaMoneyEventLog.remittanceKaMoney(kaMoney));
 
-        List<KaMoneyEventLog> kaMoneyEventLogs = kaMoneyEventLogService.findByUserAndCreatedDateAfter(kaMoney.getUser(), LocalDateTime.now().minusHours(1));
-        ruleLogService.remittanceKaMoneyRuleCheck(kaMoneyEventLogs, fromUser);
+        ruleLogService.remittanceKaMoneyRuleCheck(fromUser);
     }
 }

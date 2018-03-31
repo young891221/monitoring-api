@@ -2,6 +2,7 @@ package com.monitoring.api.test;
 
 import com.monitoring.api.domain.User;
 import com.monitoring.api.domain.log.KaMoneyEventLog;
+import com.monitoring.api.repository.KaMoneyEventLogRepository;
 import com.monitoring.api.service.RuleLogService;
 import com.monitoring.api.service.UserService;
 
@@ -9,10 +10,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.monitoring.api.domain.log.enums.KaMoneyEventType.CHARGE;
-import static com.monitoring.api.domain.log.enums.KaMoneyEventType.OPEN;
-import static com.monitoring.api.domain.log.enums.KaMoneyEventType.RECEIVE;
-import static com.monitoring.api.domain.log.enums.KaMoneyEventType.REMITTANCE;
+import static com.monitoring.api.domain.log.enums.KaMoneyEventType.*;
 
 /**
  * Created by young891221@gmail.com on 2018-03-29
@@ -23,10 +21,12 @@ public class TestMockModule {
 
     private UserService userService;
     private RuleLogService ruleLogService;
+    private KaMoneyEventLogRepository kaMoneyEventLogRepository;
 
-    public TestMockModule(UserService userService, RuleLogService ruleLogService) {
+    public TestMockModule(UserService userService, RuleLogService ruleLogService, KaMoneyEventLogRepository kaMoneyEventLogRepository) {
         this.userService = userService;
         this.ruleLogService = ruleLogService;
+        this.kaMoneyEventLogRepository = kaMoneyEventLogRepository;
     }
 
     /**
@@ -42,7 +42,8 @@ public class TestMockModule {
         kaMoneyEventLogs.add(KaMoneyEventLog.generateAtDate(OPEN, null, 100000L, LocalDateTime.now().minusMinutes(30), user));
         kaMoneyEventLogs.add(KaMoneyEventLog.generateAtDate(CHARGE, 100000L, 200000L, LocalDateTime.now().minusMinutes(20), user));
         kaMoneyEventLogs.add(KaMoneyEventLog.generateAtDate(REMITTANCE, 200000L, 1000L, LocalDateTime.now().minusMinutes(10), user));
-        ruleLogService.remittanceKaMoneyRuleCheck(kaMoneyEventLogs, user);
+        kaMoneyEventLogRepository.saveAll(kaMoneyEventLogs);
+        ruleLogService.remittanceKaMoneyRuleCheck(user);
     }
 
     /**
@@ -60,7 +61,8 @@ public class TestMockModule {
         kaMoneyEventLogs.add(KaMoneyEventLog.generateAtDate(RECEIVE, 300000L, 400000L, LocalDateTime.now().minusDays(3), user));
         kaMoneyEventLogs.add(KaMoneyEventLog.generateAtDate(RECEIVE, 400000L, 500000L, LocalDateTime.now().minusDays(2), user));
         kaMoneyEventLogs.add(KaMoneyEventLog.generateAtDate(RECEIVE, 500000L, 600000L, LocalDateTime.now().minusDays(1), user));
-        ruleLogService.receiveKaMoneyRuleCheck(kaMoneyEventLogs, user);
+        kaMoneyEventLogRepository.saveAll(kaMoneyEventLogs);
+        ruleLogService.receiveKaMoneyRuleCheck(user);
     }
 
     /**
@@ -75,6 +77,7 @@ public class TestMockModule {
         kaMoneyEventLogs.add(KaMoneyEventLog.generateAtDate(RECEIVE, 100000L, 200000L, LocalDateTime.now().minusMinutes(5), user));
         kaMoneyEventLogs.add(KaMoneyEventLog.generateAtDate(RECEIVE, 200000L, 300000L, LocalDateTime.now().minusMinutes(4), user));
         kaMoneyEventLogs.add(KaMoneyEventLog.generateAtDate(RECEIVE, 300000L, 400000L, LocalDateTime.now().minusMinutes(3), user));
-        ruleLogService.receiveKaMoneyRuleCheck(kaMoneyEventLogs, user);
+        kaMoneyEventLogRepository.saveAll(kaMoneyEventLogs);
+        ruleLogService.receiveKaMoneyRuleCheck(user);
     }
 }

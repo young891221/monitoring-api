@@ -10,34 +10,31 @@ import com.monitoring.api.domain.log.KaMoneyEventLog;
 import com.monitoring.api.domain.log.enums.KaMoneyEventType;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentMap;
 
-import static com.monitoring.api.domain.log.enums.KaMoneyEventType.CHARGE;
-import static com.monitoring.api.domain.log.enums.KaMoneyEventType.OPEN;
-import static com.monitoring.api.domain.log.enums.KaMoneyEventType.REMITTANCE;
+import static com.monitoring.api.domain.log.enums.KaMoneyEventType.*;
 
 public class RuleA implements Rule {
 
-    private ConcurrentMap<KaMoneyEventType, List<KaMoneyEventLog>> typeListConcurrentMap;
-
-    private RuleA(List<KaMoneyEventLog> kaMoneyEventLogs) {
-        this.typeListConcurrentMap = mapping(kaMoneyEventLogs);
-    }
-
-    public static RuleA create(List<KaMoneyEventLog> kaMoneyEventLogs) {
-        return new RuleA(kaMoneyEventLogs);
-    }
+    private RuleParameter ruleParameter = new RuleParameter(ChronoUnit.HOURS, 1);
 
     /**
      * RuleA 검증로직
      * 서비스 계좌 개설 1시간 이내, 20만원 충전 후 잔액이 1000원 이하가 되는 경우
      * @return RuleA에 해당하면 true, 아니면 false
+     * @param kaMoneyEventLogs
      */
     @Override
-    public boolean valid() {
-        return isWithinOneHourOpen() && isTwentyChargeAndLeftThousand();
+    public boolean valid(Map<KaMoneyEventType, List<KaMoneyEventLog>> kaMoneyEventLogs) {
+        return isWithinOneHourOpen(kaMoneyEventLogs) && isTwentyChargeAndLeftThousand(kaMoneyEventLogs);
+    }
+
+    @Override
+    public RuleParameter getRuleParameter() {
+        return ruleParameter;
     }
 
     @Override
@@ -48,19 +45,21 @@ public class RuleA implements Rule {
     /**
      * 서비스 계좌 개설 1시간 이내
      * @return boolean
+     * @param kaMoneyEventLogs
      */
-    private boolean isWithinOneHourOpen() {
-        return typeListConcurrentMap.get(OPEN).stream()
+    private boolean isWithinOneHourOpen(Map<KaMoneyEventType, List<KaMoneyEventLog>> kaMoneyEventLogs) {
+        return kaMoneyEventLogs.get(OPEN).stream()
                     .anyMatch(log -> LocalDateTime.now().minusHours(1).isBefore(log.getCreatedDate()));
     }
 
     /**
      * 20만원 충전 후 잔액이 1000원 이하가 되는 경우
      * @return boolean
+     * @param kaMoneyEventLogs
      */
-    private boolean isTwentyChargeAndLeftThousand() {
-        List<KaMoneyEventLog> chargeLogs = typeListConcurrentMap.get(CHARGE);
-        List<KaMoneyEventLog> remittanceLogs = typeListConcurrentMap.get(REMITTANCE);
+    private boolean isTwentyChargeAndLeftThousand(Map<KaMoneyEventType, List<KaMoneyEventLog>> kaMoneyEventLogs) {
+        List<KaMoneyEventLog> chargeLogs = kaMoneyEventLogs.get(CHARGE);
+        List<KaMoneyEventLog> remittanceLogs = kaMoneyEventLogs.get(REMITTANCE);
 
         Optional<KaMoneyEventLog> twentyChargeLog = chargeLogs.stream()
                 .filter(log -> log.getAfterMoney() >= 200000L)
@@ -72,7 +71,4 @@ public class RuleA implements Rule {
         return isThousandTarget.orElse(false);
     }
 
-    public ConcurrentMap<KaMoneyEventType, List<KaMoneyEventLog>> getTypeListConcurrentMap() {
-        return typeListConcurrentMap;
-    }
 }

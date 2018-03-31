@@ -2,7 +2,6 @@ package com.monitoring.api.rule;
 
 import com.monitoring.api.domain.User;
 import com.monitoring.api.domain.log.KaMoneyEventLog;
-
 import org.junit.Test;
 
 import java.time.LocalDateTime;
@@ -13,7 +12,6 @@ import static com.monitoring.api.AcceptanceTest.TEST_ID;
 import static com.monitoring.api.AcceptanceTest.TEST_NAME;
 import static com.monitoring.api.domain.log.enums.KaMoneyEventType.RECEIVE;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 /**
  * Created by young891221@gmail.com on 2018-03-27
@@ -25,34 +23,27 @@ public class RuleCTest {
     private User user = User.generate(TEST_ID, TEST_NAME);
 
     @Test
-    public void RuleC의_데이터가_올바르게_생성되는가() {
-        RuleC rule = RuleC.create(rightMockRoleCLogs());
-
-        assertNotNull(rule.getTypeListConcurrentMap().get(RECEIVE));
-    }
-
-    @Test
     public void RuleC에_해당하는_검증이_올바른가() {
-        RuleList ruleList = RuleList.generateByArray(RuleC.create(rightMockRoleCLogs()));
-        RuleEngine ruleEngine = new RuleEngine(ruleList);
+        RuleList ruleList = RuleList.generateByArray(new RuleC());
+        RuleEngine ruleEngine = RuleEngine.create(ruleList, rightMockRoleCLogs());
 
-        assertEquals("RuleC", ruleEngine.run());
+        assertEquals("RuleC", ruleEngine.run().get());
     }
 
     @Test
     public void RuleC_검증에서_받기가_2시간_이내가_아닐떄() {
-        RuleList ruleList = RuleList.generateByArray(RuleC.create(notWithinTwoHour()));
-        RuleEngine ruleEngine = new RuleEngine(ruleList);
+        RuleList ruleList = RuleList.generateByArray(new RuleC());
+        RuleEngine ruleEngine = RuleEngine.create(ruleList, notWithinTwoHour());
 
-        assertEquals("", ruleEngine.run());
+        assertEquals("", ruleEngine.run().get());
     }
 
     @Test
     public void RuleC_검증에서_받기가_5만원_이상이_3회가_아닐때() {
-        RuleList ruleList = RuleList.generateByArray(RuleC.create(incorrectCount()));
-        RuleEngine ruleEngine = new RuleEngine(ruleList);
+        RuleList ruleList = RuleList.generateByArray(new RuleC());
+        RuleEngine ruleEngine = RuleEngine.create(ruleList, incorrectCount());
 
-        assertEquals("", ruleEngine.run());
+        assertEquals("", ruleEngine.run().get());
     }
 
     private List<KaMoneyEventLog> rightMockRoleCLogs() {

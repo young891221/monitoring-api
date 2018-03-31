@@ -11,9 +11,9 @@ import java.util.List;
 
 import static com.monitoring.api.AcceptanceTest.TEST_ID;
 import static com.monitoring.api.AcceptanceTest.TEST_NAME;
-import static com.monitoring.api.domain.log.enums.KaMoneyEventType.*;
+import static com.monitoring.api.domain.log.enums.KaMoneyEventType.OPEN;
+import static com.monitoring.api.domain.log.enums.KaMoneyEventType.RECEIVE;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 /**
  * Created by young891221@gmail.com on 2018-03-27
@@ -25,44 +25,36 @@ public class RuleBTest {
     private User user = User.generate(TEST_ID, TEST_NAME);
 
     @Test
-    public void RuleB의_데이터가_올바르게_생성되는가() {
-        RuleB rule = RuleB.create(rightMockRoleBLogs());
-
-        assertNotNull(rule.getTypeListConcurrentMap().get(OPEN));
-        assertNotNull(rule.getTypeListConcurrentMap().get(RECEIVE));
-    }
-
-    @Test
     public void RuleB에_해당하는_검증이_올바른가() {
-        RuleList ruleList = RuleList.generateByArray(RuleB.create(rightMockRoleBLogs()));
-        RuleEngine ruleEngine = new RuleEngine(ruleList);
+        RuleList ruleList = RuleList.generateByArray(new RuleB());
+        RuleEngine ruleEngine = RuleEngine.create(ruleList, rightMockRoleBLogs());
 
-        assertEquals("RuleB", ruleEngine.run());
+        assertEquals("RuleB", ruleEngine.run().get());
     }
 
     @Test
     public void RuleB_검증에서_7일이내_개설이_아닐때_반환이_올바른가() {
-        RuleList ruleList = RuleList.generateByArray(
-                RuleB.create(Collections.singletonList(KaMoneyEventLog.generateAtDate(OPEN, null, 100000L, LocalDateTime.now().minusDays(8), user))));
-        RuleEngine ruleEngine = new RuleEngine(ruleList);
+        RuleList ruleList = RuleList.generateByArray(new RuleB());
+        RuleEngine ruleEngine = RuleEngine.create(ruleList,
+                Collections.singletonList(KaMoneyEventLog.generateAtDate(OPEN, null, 100000L, LocalDateTime.now().minusDays(8), user)));
 
-        assertEquals("", ruleEngine.run());
+        assertEquals("", ruleEngine.run().get());
     }
 
     @Test
     public void RuleB_검증에서_받기가_10만원_이상이_아닐때() {
-        RuleList ruleList = RuleList.generateByArray(RuleB.create(incorrectTenThousand()));
-        RuleEngine ruleEngine = new RuleEngine(ruleList);
+        RuleList ruleList = RuleList.generateByArray(new RuleB());
+        RuleEngine ruleEngine = RuleEngine.create(ruleList, incorrectTenThousand());
 
-        assertEquals("", ruleEngine.run());
+        assertEquals("", ruleEngine.run().get());
     }
 
     @Test
     public void RuleB_검증에서_받기가_10만원_이상이_5회가_아닐때() {
-        RuleList ruleList = RuleList.generateByArray(RuleB.create(incorrectCount()));
-        RuleEngine ruleEngine = new RuleEngine(ruleList);
+        RuleList ruleList = RuleList.generateByArray(new RuleB());
+        RuleEngine ruleEngine = RuleEngine.create(ruleList, incorrectCount());
 
-        assertEquals("", ruleEngine.run());
+        assertEquals("", ruleEngine.run().get());
     }
 
     private List<KaMoneyEventLog> rightMockRoleBLogs() {

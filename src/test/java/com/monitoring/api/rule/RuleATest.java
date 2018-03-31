@@ -35,36 +35,28 @@ public class RuleATest {
     private User user = User.generate(TEST_ID, TEST_NAME);
 
     @Test
-    public void RuleA의_데이터가_올바르게_생성되는가() {
-        RuleA rule = RuleA.create(rightMockRoleALogs());
-
-        assertNotNull(rule.getTypeListConcurrentMap().get(OPEN));
-        assertNotNull(rule.getTypeListConcurrentMap().get(REMITTANCE));
-    }
-
-    @Test
     public void RuleA에_해당하는_검증이_올바른가() {
-        RuleList ruleList = RuleList.generateByArray(RuleA.create(rightMockRoleALogs()));
-        RuleEngine ruleEngine = new RuleEngine(ruleList);
+        RuleList ruleList = RuleList.generateByArray(new RuleA());
+        RuleEngine ruleEngine = RuleEngine.create(ruleList, rightMockRoleALogs());
 
-        assertEquals("RuleA", ruleEngine.run());
+        assertEquals("RuleA", ruleEngine.run().get());
     }
 
     @Test
     public void RuleA_검증에서_한시간이내_개설이_아닐때_반환이_올바른가() {
-        RuleList ruleList = RuleList.generateByArray(
-                RuleA.create(Collections.singletonList(KaMoneyEventLog.generateAtDate(OPEN, null, 100000L, LocalDateTime.now().minusMinutes(70), user))));
-        RuleEngine ruleEngine = new RuleEngine(ruleList);
+        RuleList ruleList = RuleList.generateByArray(new RuleA());
+        RuleEngine ruleEngine = RuleEngine.create(ruleList,
+                Collections.singletonList(KaMoneyEventLog.generateAtDate(OPEN, null, 100000L, LocalDateTime.now().minusMinutes(70), user)));
 
-        assertEquals("", ruleEngine.run());
+        assertEquals("", ruleEngine.run().get());
     }
 
     @Test
     public void RuleA_검증에서_20만원_충전_이후에_1000원으로_바뀐것만_체크하는가() {
-        RuleList ruleList = RuleList.generateByArray(RuleA.create(incorrectChargeOrder()));
-        RuleEngine ruleEngine = new RuleEngine(ruleList);
+        RuleList ruleList = RuleList.generateByArray(new RuleA());
+        RuleEngine ruleEngine = RuleEngine.create(ruleList, incorrectChargeOrder());
 
-        assertEquals("", ruleEngine.run());
+        assertEquals("", ruleEngine.run().get());
     }
 
     private List<KaMoneyEventLog> rightMockRoleALogs() {

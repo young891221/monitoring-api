@@ -24,7 +24,7 @@ public class RuleIntegrationTest extends AcceptanceTest {
     @Before
     public void init() {
         testIntegrationModule = new TestIntegrationModule(userService, accountService, kaMoneyFacade);
-        testMockModule = new TestMockModule(userService, ruleLogService);
+        testMockModule = new TestMockModule(userService, ruleLogService, kaMoneyEventLogRepository);
     }
 
     @Test

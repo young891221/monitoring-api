@@ -2,7 +2,6 @@ package com.monitoring.api.rule;
 
 import com.monitoring.api.domain.User;
 import com.monitoring.api.domain.log.KaMoneyEventLog;
-
 import org.junit.Test;
 
 import java.time.LocalDateTime;
@@ -26,10 +25,26 @@ public class RuleEngineTest {
 
     @Test
     public void RuleB_RuleC를_동시에_어겼을_때_출력형식이_올바른가() {
-        RuleList ruleList = RuleList.generateByArray(RuleB.create(incorrectRuleBAndRuleC()), RuleC.create(incorrectRuleBAndRuleC()));
-        RuleEngine ruleEngine = new RuleEngine(ruleList);
+        RuleList ruleList = RuleList.generateByArray(new RuleB(), new RuleC());
+        RuleEngine ruleEngine = RuleEngine.create(ruleList, incorrectRuleBAndRuleC());
 
-        assertEquals("RuleB, RuleC", ruleEngine.run());
+        assertEquals("RuleB, RuleC", ruleEngine.run().get());
+    }
+
+    @Test
+    public void RuleC_RuleB_순서를_바꿔도_실행결과는_같은가() throws Exception {
+        RuleList ruleList = RuleList.generateByArray(new RuleC(), new RuleB());
+        RuleEngine ruleEngine = RuleEngine.create(ruleList, incorrectRuleBAndRuleC());
+
+        assertEquals("RuleB, RuleC", ruleEngine.run().get());
+    }
+
+    @Test
+    public void RuleC_중복을_제거하는가() throws Exception {
+        RuleList ruleList = RuleList.generateByArray(new RuleC(), new RuleC());
+        RuleEngine ruleEngine = RuleEngine.create(ruleList, incorrectRuleBAndRuleC());
+
+        assertEquals("RuleC", ruleEngine.run().get());
     }
 
     private List<KaMoneyEventLog> incorrectRuleBAndRuleC() {

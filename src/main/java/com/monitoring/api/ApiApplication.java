@@ -1,6 +1,7 @@
 package com.monitoring.api;
 
 import com.monitoring.api.facade.KaMoneyFacade;
+import com.monitoring.api.repository.KaMoneyEventLogRepository;
 import com.monitoring.api.service.AccountService;
 import com.monitoring.api.service.RuleLogService;
 import com.monitoring.api.service.UserService;
@@ -28,14 +29,14 @@ public class ApiApplication {
 	 * 애플리케이션 동작시 테스트 Mock 데이터를 위해 CommandLineRunner 동작하도록 작성
 	 */
 	@Bean
-	public CommandLineRunner runner(UserService userService, AccountService accountService, KaMoneyFacade kaMoneyFacade, RuleLogService ruleLogService) {
+	public CommandLineRunner runner(UserService userService, AccountService accountService, KaMoneyFacade kaMoneyFacade, RuleLogService ruleLogService, KaMoneyEventLogRepository kaMoneyEventLogRepository) {
 		return (args) -> {
 			TestIntegrationModule testIntegrationModule = new TestIntegrationModule(userService, accountService, kaMoneyFacade);
 			//testIntegrationModule.testRoleAProcess();
 			//testIntegrationModule.testRoleBProcess();
 			//testIntegrationModule.testRoleCProcess();
 
-			TestMockModule testMockModule = new TestMockModule(userService, ruleLogService);
+			TestMockModule testMockModule = new TestMockModule(userService, ruleLogService, kaMoneyEventLogRepository);
 			//testMockModule.testRoleAProcess();
 			testMockModule.testRoleBProcess();
 			//testMockModule.testRoleCProcess();
