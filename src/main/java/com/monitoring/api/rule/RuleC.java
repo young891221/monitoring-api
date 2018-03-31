@@ -40,6 +40,11 @@ public class RuleC implements Rule {
                 .count() >= 3;
     }
 
+    @Override
+    public String getName() {
+        return "RuleC";
+    }
+
     public ConcurrentMap<KaMoneyEventType, List<KaMoneyEventLog>> getTypeListConcurrentMap() {
         return typeListConcurrentMap;
     }

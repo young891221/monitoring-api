@@ -26,7 +26,7 @@ public class RuleEngine {
     public String run() {
         return ruleList.get().stream()
                 .filter(Rule::valid)
-                .map(rule -> rule.getClass().getSimpleName())
+                .map(Rule::getName)
                 .collect(Collectors.joining(", "));
     }
 }

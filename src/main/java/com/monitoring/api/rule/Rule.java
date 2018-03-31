@@ -20,6 +20,8 @@ public interface Rule {
 
     boolean valid();
 
+    String getName();
+
     /**
      * KaMoneyEventType을 기준으로 넘어온 로그들을 그룹핑하여 Rule을 위한 데이터 생성
      * parallelStream(해당 서버의 코어수를 디폴트로 쓰레드를 생성)을 사용하여 병렬로 처리

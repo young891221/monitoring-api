@@ -40,6 +40,11 @@ public class RuleA implements Rule {
         return isWithinOneHourOpen() && isTwentyChargeAndLeftThousand();
     }
 
+    @Override
+    public String getName() {
+        return "RuleA";
+    }
+
     /**
      * 서비스 계좌 개설 1시간 이내
      * @return boolean

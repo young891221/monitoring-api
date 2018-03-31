@@ -38,6 +38,11 @@ public class RuleB implements Rule {
         return isWithinSevenDayOpen() && isReceiveTenThousandAtFiveTime();
     }
 
+    @Override
+    public String getName() {
+        return "RuleB";
+    }
+
     /**
      * 서비스 계좌 개설 7일 이내
      * @return
