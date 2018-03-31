@@ -43,12 +43,6 @@ public abstract class AcceptanceTest {
 	public RuleLogFacade ruleLogFacade;
 
 	@Autowired
-	public UserRepository userRepository;
-
-	@Autowired
 	public KaMoneyEventLogRepository kaMoneyEventLogRepository;
-
-	@Autowired
-	public RuleLogRepository ruleLogRepository;
 
 }
