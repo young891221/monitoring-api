@@ -47,6 +47,21 @@ public class RuleEngineTest {
         assertEquals("RuleC", ruleEngine.run().get());
     }
 
+    @Test
+    public void RuleEngine_맵핑_성능_테스트() {
+        RuleList ruleList = RuleList.generateByArray(new RuleB(), new RuleC());
+
+        List<KaMoneyEventLog> kaMoneyEventLogs = new ArrayList<>();
+        kaMoneyEventLogs.add(KaMoneyEventLog.generateAtDate(OPEN, null, 100000L, LocalDateTime.now().minusDays(1), user));
+        for(int i = 0; i < 1000000; i++) {
+            kaMoneyEventLogs.add(KaMoneyEventLog.generateAtDate(RECEIVE, 100000L, 200000L, LocalDateTime.now().minusMinutes(5), user));
+        }
+
+        long start = System.currentTimeMillis();
+        RuleEngine.create(ruleList, kaMoneyEventLogs);
+        System.out.print(String.valueOf(System.currentTimeMillis() - start));
+    }
+
     private List<KaMoneyEventLog> incorrectRuleBAndRuleC() {
         List<KaMoneyEventLog> kaMoneyEventLogs = new ArrayList<>();
         kaMoneyEventLogs.add(KaMoneyEventLog.generateAtDate(OPEN, null, 100000L, LocalDateTime.now().minusDays(1), user));

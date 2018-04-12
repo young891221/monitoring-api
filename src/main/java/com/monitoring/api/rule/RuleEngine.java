@@ -7,6 +7,8 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
 
 /**
@@ -53,12 +55,22 @@ public class RuleEngine {
      * @return 키값은 KaMoneyEventType으로 해당 키에 맵핑되는 List<KaMoneyEventLog>를 가진 EnumMap 자료구조 반환
      */
     private Map<KaMoneyEventType, List<KaMoneyEventLog>> mapping(final List<KaMoneyEventLog> kaMoneyEventLogs) {
-        return kaMoneyEventLogs.parallelStream()
-                .collect(Collectors.groupingBy(
-                        KaMoneyEventLog::getKaMoneyEventType,
-                        () -> new EnumMap<>(KaMoneyEventType.class),
-                        Collectors.toList()
-                ));
+        ForkJoinPool forkJoinPool = new ForkJoinPool(4);
+        Map<KaMoneyEventType, List<KaMoneyEventLog>> result = null;
+        try {
+            result = forkJoinPool.submit(() -> kaMoneyEventLogs.parallelStream()
+                    .collect(Collectors.groupingBy(
+                            KaMoneyEventLog::getKaMoneyEventType,
+                            () -> new EnumMap<>(KaMoneyEventType.class),
+                            Collectors.toList()
+                    ))).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 
 }
