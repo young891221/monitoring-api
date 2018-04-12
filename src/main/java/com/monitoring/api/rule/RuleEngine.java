@@ -62,6 +62,8 @@ public class RuleEngine {
                         Collectors.toList()
                 ));
 
+        //https://stackoverflow.com/questions/23170832/java-8s-streams-why-parallel-stream-is-slower
+        //병렬이 분할/작업/결합과 같은 작업을 더 수행해서 오히려 일반적인 스트림 작업보다 오버 헤드되는 문제가 있다.
         /*ForkJoinPool forkJoinPool = new ForkJoinPool(4);
         Map<KaMoneyEventType, List<KaMoneyEventLog>> result = null;
         try {
