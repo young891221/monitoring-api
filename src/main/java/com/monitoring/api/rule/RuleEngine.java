@@ -55,10 +55,17 @@ public class RuleEngine {
      * @return 키값은 KaMoneyEventType으로 해당 키에 맵핑되는 List<KaMoneyEventLog>를 가진 EnumMap 자료구조 반환
      */
     private Map<KaMoneyEventType, List<KaMoneyEventLog>> mapping(final List<KaMoneyEventLog> kaMoneyEventLogs) {
-        ForkJoinPool forkJoinPool = new ForkJoinPool(4);
+        return kaMoneyEventLogs.stream()
+                .collect(Collectors.groupingBy(
+                        KaMoneyEventLog::getKaMoneyEventType,
+                        () -> new EnumMap<>(KaMoneyEventType.class),
+                        Collectors.toList()
+                ));
+
+        /*ForkJoinPool forkJoinPool = new ForkJoinPool(4);
         Map<KaMoneyEventType, List<KaMoneyEventLog>> result = null;
         try {
-            result = forkJoinPool.submit(() -> kaMoneyEventLogs.parallelStream()
+            result = forkJoinPool.submit(() -> kaMoneyEventLogs.stream()
                     .collect(Collectors.groupingBy(
                             KaMoneyEventLog::getKaMoneyEventType,
                             () -> new EnumMap<>(KaMoneyEventType.class),
@@ -70,7 +77,7 @@ public class RuleEngine {
             e.printStackTrace();
         }
 
-        return result;
+        return result;*/
     }
 
 }
