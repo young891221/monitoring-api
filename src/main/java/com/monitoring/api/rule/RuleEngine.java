@@ -65,7 +65,7 @@ public class RuleEngine {
         /*ForkJoinPool forkJoinPool = new ForkJoinPool(4);
         Map<KaMoneyEventType, List<KaMoneyEventLog>> result = null;
         try {
-            result = forkJoinPool.submit(() -> kaMoneyEventLogs.stream()
+            result = forkJoinPool.submit(() -> kaMoneyEventLogs.parallelStream()
                     .collect(Collectors.groupingBy(
                             KaMoneyEventLog::getKaMoneyEventType,
                             () -> new EnumMap<>(KaMoneyEventType.class),
